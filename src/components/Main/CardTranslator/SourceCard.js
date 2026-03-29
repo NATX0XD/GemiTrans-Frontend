@@ -4,23 +4,23 @@ import { Sparkles, Languages } from 'lucide-react';
 
 const SourceCard = ({ sourceText, detectedLang, onSourceTextChange, onTranslate, isTranslating, isDisabled }) => {
   return (
-    <div className="w-full lg:h-full min-h-[220px] lg:min-h-0 flex flex-col bg-white/95 backdrop-blur-3xl rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.06),0_0_40px_rgba(99,102,241,0.15)] ring-1 ring-white border-[1.5px] border-indigo-100/60 overflow-hidden relative group transition-all hover:shadow-[0_12px_50px_rgba(0,0,0,0.08),0_0_60px_rgba(99,102,241,0.25)] hover:border-indigo-300">
+    <div className="w-full lg:h-full min-h-[220px] lg:min-h-0 flex flex-col bg-white/95 dark:bg-slate-900/40 backdrop-blur-3xl rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.06),0_0_40px_rgba(99,102,241,0.15)] dark:shadow-2xl dark:shadow-indigo-500/10 ring-1 ring-white dark:ring-slate-800/50 border-[1.5px] border-indigo-100/60 dark:border-slate-800 overflow-hidden relative group transition-all duration-500 hover:shadow-[0_12px_50px_rgba(0,0,0,0.08),0_0_60px_rgba(99,102,241,0.25)] hover:border-indigo-300 dark:hover:border-slate-700">
 
       {/* Decorative Glow inside SourceCard */}
-      <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-500/20 blur-[80px] rounded-full pointer-events-none z-0"></div>
-      <div className="absolute -top-32 -left-32 w-80 h-80 bg-blue-500/15 blur-[80px] rounded-full pointer-events-none z-0"></div>
+      <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-500/20 dark:bg-indigo-600/10 blur-[80px] rounded-full pointer-events-none z-0"></div>
+      <div className="absolute -top-32 -left-32 w-80 h-80 bg-blue-500/15 dark:bg-blue-600/10 blur-[80px] rounded-full pointer-events-none z-0"></div>
 
       <div className="relative z-10 flex flex-col h-full min-h-0">
         {/* Header */}
         <div className="px-6 pt-6 pb-2 flex items-center justify-between z-10">
-          <div className="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 ring-1 ring-indigo-500/10 transition-colors px-4 py-2 h-9 rounded-xl border-0">
-            <Languages size={15} className="text-indigo-600 shrink-0" />
-            <span className="font-bold text-xs text-indigo-700 uppercase tracking-widest">{detectedLang ? " Translate from " + detectedLang : "Detect Language"}</span>
+          <div className="flex items-center gap-2 bg-indigo-50 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-slate-700 ring-1 ring-indigo-500/10 dark:ring-slate-700/50 transition-colors px-4 py-2 h-9 rounded-xl border-0">
+            <Languages size={15} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
+            <span className="font-bold text-xs text-indigo-700 dark:text-slate-300 uppercase tracking-widest">{detectedLang ? " Translate from " + detectedLang : "Detect Language"}</span>
           </div>
 
           <Button
             color="primary"
-            className="h-9 px-6 font-bold text-xs tracking-wide rounded-xl bg-indigo-600 shadow-xl shadow-indigo-500/20 hover:shadow-2xl hover:bg-indigo-700 transition-all border-none text-white disable-bg-white group/btn"
+            className="h-9 px-6 font-bold text-xs tracking-wide rounded-xl bg-indigo-600 dark:bg-indigo-500 shadow-xl shadow-indigo-500/20 hover:shadow-2xl hover:bg-indigo-700 transition-all border-none text-white disable-bg-white group/btn"
             isLoading={isTranslating}
             onPress={onTranslate}
             isDisabled={isDisabled}
@@ -37,7 +37,7 @@ const SourceCard = ({ sourceText, detectedLang, onSourceTextChange, onTranslate,
             placeholder="Type what you'd like to translate..."
             classNames={{
               base: "w-full h-full flex-1 min-h-0",
-              input: "resize-none text-xl font-medium text-slate-800 leading-relaxed placeholder:text-slate-300 h-full overflow-y-auto mix-blend-multiply",
+              input: "resize-none text-xl font-medium text-slate-800 dark:text-slate-100 leading-relaxed placeholder:text-slate-300 dark:placeholder:text-slate-600 h-full overflow-y-auto mix-blend-multiply dark:mix-blend-normal",
               inputWrapper: "h-full bg-transparent shadow-none hover:bg-transparent focus-within:!bg-transparent data-[hover=true]:bg-transparent data-[focus=true]:!bg-transparent data-[focus=true]:!shadow-none data-[focus=true]:!ring-0 data-[focus-visible=true]:!ring-0 px-0"
             }}
             value={sourceText}

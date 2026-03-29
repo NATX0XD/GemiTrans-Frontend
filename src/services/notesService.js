@@ -21,7 +21,7 @@ export const saveNote = async (uid, noteItem) => {
       notesList[existingIndex] = { ...notesList[existingIndex], ...noteItem };
     } else {
       // New note — prepend
-      notesList.unshift(noteItem);
+      notesList.unshift({ ...noteItem, date: Date.now() });
       if (notesList.length > MAX_NOTES) {
         notesList = notesList.slice(0, MAX_NOTES);
       }

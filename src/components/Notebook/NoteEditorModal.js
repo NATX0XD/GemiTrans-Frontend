@@ -135,39 +135,39 @@ const NoteEditorModal = ({ isOpen, onClose, sourceText, translations = [], editN
     >
       <div 
         onClick={(e) => e.stopPropagation()}
-        className="relative w-[92%] max-w-3xl bg-white rounded-[2rem] shadow-2xl flex flex-col overflow-hidden"
+        className="relative w-[92%] max-w-3xl bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl dark:shadow-[0_30px_60px_-12px_rgba(0,0,0,0.6)] border border-slate-100 dark:border-slate-800 flex flex-col overflow-hidden transition-colors duration-500"
         style={{ height: '75vh' }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-8 pt-6 pb-4 border-b border-slate-100">
+        <div className="flex items-center justify-between px-8 pt-6 pb-4 border-b border-slate-100 dark:border-slate-800">
           <div className="flex-1 mr-4">
             <input 
               type="text"
               value={title}
               onChange={handleTitleChange}
-              className="w-full text-xl font-bold text-slate-800 bg-transparent border-none outline-none placeholder:text-slate-300"
+              className="w-full text-xl font-bold text-slate-800 dark:text-slate-100 bg-transparent border-none outline-none placeholder:text-slate-300 dark:placeholder:text-slate-700"
               placeholder="Note title..."
             />
           </div>
           <div className="flex items-center gap-4">
             {/* Save Status */}
             <span className="text-xs font-semibold tracking-wide h-9 flex items-center">
-              {saveStatus === 'saving' && <span className="text-amber-500 flex items-center gap-1.5"><Loader2 size={13} className="animate-spin" /> Saving...</span>}
-              {saveStatus === 'saved' && <span className="text-emerald-500 flex items-center gap-1.5"><Check size={13} /> Saved</span>}
+              {saveStatus === 'saving' && <span className="text-amber-500 dark:text-amber-400 flex items-center gap-1.5"><Loader2 size={13} className="animate-spin" /> Saving...</span>}
+              {saveStatus === 'saved' && <span className="text-emerald-500 dark:text-emerald-400 flex items-center gap-1.5"><Check size={13} /> Saved</span>}
             </span>
             
             {/* Manual Save Button */}
             <button
               onClick={() => { hasUserEdited.current = true; performSave(); }}
               disabled={saveStatus === 'saving'}
-              className="px-4 h-9 rounded-xl bg-teal-500 hover:bg-teal-600 text-white text-xs font-bold transition-all shadow-md shadow-teal-500/20 active:scale-95 disabled:opacity-50 border-none cursor-pointer"
+              className="px-4 h-9 rounded-xl bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500 text-white text-xs font-bold transition-all shadow-md shadow-teal-500/20 dark:shadow-teal-900/40 active:scale-95 disabled:opacity-50 border-none cursor-pointer"
             >
               Save Now
             </button>
 
             <button 
               onClick={handleClose}
-              className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-700 transition-colors cursor-pointer border-none outline-none"
+              className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer border-none outline-none"
             >
               <X size={18} />
             </button>
@@ -176,7 +176,7 @@ const NoteEditorModal = ({ isOpen, onClose, sourceText, translations = [], editN
 
         {/* Toolbar */}
         {editor && (
-          <div className="flex items-center gap-1 px-8 py-3 border-b border-slate-100 flex-wrap">
+          <div className="flex items-center gap-1 px-8 py-3 border-b border-slate-100 dark:border-slate-800 flex-wrap">
             <ToolbarButton 
               active={editor.isActive('bold')} 
               onClick={() => editor.chain().focus().toggleBold().run()}
@@ -198,7 +198,7 @@ const NoteEditorModal = ({ isOpen, onClose, sourceText, translations = [], editN
               title="Highlight"
             ><Highlighter size={16} /></ToolbarButton>
             
-            <div className="w-px h-5 bg-slate-200 mx-2"></div>
+            <div className="w-px h-5 bg-slate-200 dark:bg-slate-800 mx-2"></div>
             
             <ToolbarButton 
               active={editor.isActive('heading', { level: 2 })} 
@@ -206,14 +206,14 @@ const NoteEditorModal = ({ isOpen, onClose, sourceText, translations = [], editN
               title="Heading"
             ><Type size={16} /></ToolbarButton>
 
-            <div className="w-px h-5 bg-slate-200 mx-2"></div>
+            <div className="w-px h-5 bg-slate-200 dark:bg-slate-800 mx-2"></div>
 
             {/* Color Swatches */}
             {COLORS.map(color => (
               <button 
                 key={color}
                 onClick={() => editor.chain().focus().setColor(color).run()}
-                className="w-5 h-5 rounded-full border-2 border-white shadow-sm cursor-pointer hover:scale-125 transition-transform outline-none"
+                className="w-5 h-5 rounded-full border-2 border-white dark:border-slate-800 shadow-sm cursor-pointer hover:scale-125 transition-transform outline-none"
                 style={{ backgroundColor: color }}
                 title={`Text color: ${color}`}
               />
@@ -223,7 +223,7 @@ const NoteEditorModal = ({ isOpen, onClose, sourceText, translations = [], editN
 
         {/* Editor Body */}
         <div className="flex-1 overflow-y-auto px-8 py-6">
-          <EditorContent editor={editor} className="tiptap-editor prose prose-slate max-w-none min-h-full" />
+          <EditorContent editor={editor} className="tiptap-editor prose prose-slate dark:prose-invert max-w-none min-h-full" />
         </div>
       </div>
     </div>
@@ -239,8 +239,8 @@ const ToolbarButton = ({ children, active, onClick, title }) => (
     title={title}
     className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors border-none cursor-pointer outline-none ${
       active 
-        ? 'bg-indigo-100 text-indigo-600' 
-        : 'bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+        ? 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400' 
+        : 'bg-transparent text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-300'
     }`}
   >
     {children}

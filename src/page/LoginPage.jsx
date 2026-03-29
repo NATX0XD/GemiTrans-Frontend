@@ -57,7 +57,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="w-full max-w-md p-8 bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-indigo-500/10 rounded-[2.5rem] relative overflow-hidden">
+    <div className="w-full max-w-md p-8 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-slate-800 shadow-2xl shadow-indigo-500/10 dark:shadow-black/40 rounded-[2.5rem] relative overflow-hidden transition-colors duration-500">
       
       {/* Decorative gradient blob */}
       <div className="absolute -top-24 -right-24 w-48 h-48 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
@@ -70,8 +70,8 @@ const LoginPage = () => {
               <path d="M12 2L15.09 8.91L22 12L15.09 15.09L12 22L8.91 15.09L2 12L8.91 8.91L12 2Z" fill="white" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold font-sans text-slate-800 tracking-tight">Welcome back</h1>
-          <p className="text-sm text-slate-500 mt-2">Sign in to Translation Workbench</p>
+          <h1 className="text-2xl font-bold font-sans text-slate-800 dark:text-slate-100 tracking-tight">Welcome back</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-500 mt-2">Sign in to Translation Workbench</p>
         </div>
 
         {error && (
@@ -83,7 +83,7 @@ const LoginPage = () => {
 
         <form onSubmit={handleEmailLogin} className="space-y-5">
           <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-slate-700 ml-1">Email</label>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-400 ml-1">Email</label>
             <Input
               type="email"
               variant="faded"
@@ -93,14 +93,14 @@ const LoginPage = () => {
               isRequired
               startContent={<Mail className="w-4 h-4 text-slate-400" />}
               classNames={{
-                inputWrapper: "bg-white border-1.5 border-slate-300 hover:border-indigo-300 data-[focus=true]:border-indigo-500 data-[focus=true]:bg-white transition-all shadow-sm rounded-2xl h-12",
-                input: "text-sm text-slate-800 placeholder:text-slate-400 font-medium"
+                inputWrapper: "bg-white dark:bg-slate-800/50 border-1.5 border-slate-300 dark:border-slate-700 hover:border-indigo-300 data-[focus=true]:border-indigo-500 data-[focus=true]:bg-white dark:data-[focus=true]:bg-slate-800/70 transition-all shadow-sm rounded-2xl h-12",
+                input: "text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 font-medium"
               }}
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-slate-700 ml-1">Password</label>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-400 ml-1">Password</label>
             <Input
               variant="faded"
               placeholder="Enter your password"
@@ -119,8 +119,8 @@ const LoginPage = () => {
                 </button>
               }
               classNames={{
-                inputWrapper: "bg-white border-1.5 border-slate-300 hover:border-indigo-300 data-[focus=true]:border-indigo-500 data-[focus=true]:bg-white transition-all shadow-sm rounded-2xl h-12",
-                input: "text-sm text-slate-800 placeholder:text-slate-400 font-medium"
+                inputWrapper: "bg-white dark:bg-slate-800/50 border-1.5 border-slate-300 dark:border-slate-700 hover:border-indigo-300 data-[focus=true]:border-indigo-500 data-[focus=true]:bg-white dark:data-[focus=true]:bg-slate-800/70 transition-all shadow-sm rounded-2xl h-12",
+                input: "text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 font-medium"
               }}
             />
           </div>
@@ -142,16 +142,16 @@ const LoginPage = () => {
         </form>
 
         <div className="mt-8 mb-8 flex items-center">
-          <div className="flex-grow border-t border-slate-200/60"></div>
-          <span className="px-4 text-xs font-medium text-slate-400 uppercase tracking-wider">or continue with</span>
-          <div className="flex-grow border-t border-slate-200/60"></div>
+          <div className="flex-grow border-t border-slate-200/60 dark:border-slate-800"></div>
+          <span className="px-4 text-xs font-medium text-slate-400 dark:text-slate-600 uppercase tracking-wider transition-colors">or continue with</span>
+          <div className="flex-grow border-t border-slate-200/60 dark:border-slate-800"></div>
         </div>
 
         <Button
           onClick={handleGoogleLogin}
           isLoading={googleLoading}
           variant="faded"
-          className="w-full bg-white border border-slate-200 text-slate-700 font-medium rounded-2xl py-6 hover:bg-slate-50 transition-all shadow-sm"
+          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium rounded-2xl py-6 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm"
           startContent={
             !googleLoading && (
               <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -166,9 +166,9 @@ const LoginPage = () => {
           {googleLoading ? "Connecting to Google..." : "Continue with Google"}
         </Button>
 
-        <p className="mt-8 text-center text-sm text-slate-500 font-medium">
+        <p className="mt-8 text-center text-sm text-slate-500 dark:text-slate-500 font-medium transition-colors">
           Don't have an account?{' '}
-          <Link to="/register" className="text-slate-900 border-b border-slate-900 pb-0.5 hover:opacity-70 transition-opacity">
+          <Link to="/register" className="text-slate-900 dark:text-slate-100 border-b border-slate-900 dark:border-slate-100 pb-0.5 hover:opacity-70 transition-opacity">
             Sign up now
           </Link>
         </p>

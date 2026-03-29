@@ -26,10 +26,10 @@ const ContextDropdown = ({ selectedValue, onChange }) => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 h-7 px-2 bg-transparent border-0 rounded-lg hover:bg-slate-300/30 transition-colors cursor-pointer outline-none -mr-2"
+        className="flex items-center gap-1.5 h-7 px-2 bg-transparent border-0 rounded-lg hover:bg-slate-300/30 dark:hover:bg-slate-800 transition-colors cursor-pointer outline-none -mr-2"
       >
-        <span className="text-sm font-bold text-slate-800 tracking-wide">{selectedLabel}</span>
-        <ChevronDown size={14} className="text-slate-500" />
+        <span className="text-sm font-bold text-slate-800 dark:text-slate-200 tracking-wide">{selectedLabel}</span>
+        <ChevronDown size={14} className="text-slate-500 dark:text-slate-400" />
       </button>
 
       {isOpen && (
@@ -44,8 +44,8 @@ const ContextDropdown = ({ selectedValue, onChange }) => {
                   setIsOpen(false);
                 }}
                 className={`flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm font-semibold transition-all border-0 cursor-pointer outline-none ${isSelected
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30'
-                  : 'bg-transparent text-slate-700 hover:bg-slate-100'
+                  ? 'bg-blue-600 dark:bg-indigo-600 text-white shadow-md shadow-blue-500/30 dark:shadow-indigo-500/20'
+                  : 'bg-transparent text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
               >
                 <span>{obj.label}</span>
@@ -82,7 +82,7 @@ const HeadCard = ({ card, onUpdateCard, onRemoveCard, canRemove, onOpenLangModal
           {/* Drag Handle */}
           <div 
             {...dragHandleProps}
-            className="p-1.5 text-slate-300 hover:text-slate-500 cursor-grab active:cursor-grabbing hover:bg-slate-200/40 rounded-lg transition-all"
+            className="p-1.5 text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 cursor-grab active:cursor-grabbing hover:bg-slate-200/40 dark:hover:bg-slate-800/40 rounded-lg transition-all"
             title="Drag to reorder"
           >
             <GripVertical size={20} />
@@ -91,17 +91,17 @@ const HeadCard = ({ card, onUpdateCard, onRemoveCard, canRemove, onOpenLangModal
           <button
             type="button"
             onClick={() => onOpenLangModal(card.id)}
-            className="h-9 px-4 bg-slate-200/50 hover:bg-slate-200 transition-colors rounded-xl flex items-center gap-2 cursor-pointer border-0 outline-none ml-1"
+            className="h-9 px-4 bg-slate-200/50 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors rounded-xl flex items-center gap-2 cursor-pointer border-0 outline-none ml-1 shadow-sm"
           >
-            <span className="text-xs font-semibold text-slate-500">Translate to</span>
-            <span className="text-sm font-bold text-slate-800">{currentLanguageLabel}</span>
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-500">Translate to</span>
+            <span className="text-sm font-bold text-slate-800 dark:text-slate-200">{currentLanguageLabel}</span>
           </button>
         </div>
 
         {/* Right Side: Context & Delete */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center bg-slate-200/50 rounded-xl px-4 h-9">
-            <span className="text-xs font-semibold text-slate-500 mr-2 whitespace-nowrap">Style</span>
+          <div className="flex items-center bg-slate-200/50 dark:bg-slate-800 rounded-xl px-4 h-9 shadow-sm">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-500 mr-2 whitespace-nowrap">Style</span>
             <ContextDropdown
               selectedValue={card.objective}
               onChange={(val) => onUpdateCard(card.id, 'objective', val)}
@@ -115,7 +115,7 @@ const HeadCard = ({ card, onUpdateCard, onRemoveCard, canRemove, onOpenLangModal
               size="sm"
               variant="light"
               color="danger"
-              className="shrink-0 w-8 h-8 min-w-8 rounded-full opacity-40 hover:opacity-100 hover:bg-red-50 transition-all text-red-500 bg-transparent"
+              className="shrink-0 w-8 h-8 min-w-8 rounded-full opacity-40 hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all text-red-500 bg-transparent"
               onPress={handleDeleteClick}
             >
               <Trash2 size={16} />

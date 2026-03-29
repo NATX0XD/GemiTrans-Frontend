@@ -238,17 +238,17 @@ const TranslationWorkspace = forwardRef(({ onOpenLanguageModal }, ref) => {
           {/* Cell: Add More Language Button Area */}
           {targetCards.length < MAX_CARDS && (
             <div 
-              className={`w-full lg:h-full min-h-[140px] p-6 flex flex-col items-center justify-center border-2 border-dashed border-indigo-200/60 rounded-2xl bg-indigo-50/20 hover:bg-indigo-50/50 hover:border-indigo-300/60 transition-all cursor-pointer text-indigo-400 hover:text-indigo-500 group ${targetCards.length === 1 ? 'lg:col-span-2' : ''}`}
+              className={`w-full lg:h-full min-h-[140px] p-6 flex flex-col items-center justify-center border-2 border-dashed border-indigo-200/60 dark:border-slate-800 rounded-2xl bg-indigo-50/20 dark:bg-slate-900/40 hover:bg-indigo-50/50 dark:hover:bg-slate-800/60 hover:border-indigo-300/60 transition-all cursor-pointer text-indigo-400 dark:text-slate-500 hover:text-indigo-500 dark:hover:text-slate-400 group ${targetCards.length === 1 ? 'lg:col-span-2' : ''}`}
               onClick={handleAddCard}
             >
-              <div className="w-10 h-10 rounded-full bg-indigo-100/60 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-10 h-10 rounded-full bg-indigo-100/60 dark:bg-slate-800 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                 <Plus size={20} />
               </div>
-              <span className="text-sm font-bold tracking-wide text-indigo-500">Add Another Translation</span>
-              <span className="text-xs font-medium text-indigo-400/80 mt-1.5 max-w-sm text-center leading-relaxed">
+              <span className="text-sm font-bold tracking-wide text-indigo-500 dark:text-slate-300">Add Another Translation</span>
+              <span className="text-xs font-medium text-indigo-400/80 dark:text-slate-500 mt-1.5 max-w-sm text-center leading-relaxed">
                 Compare different languages, tones, or contexts side-by-side in one click.
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider mt-4 px-2 py-1 bg-indigo-100/60 text-indigo-500/80 rounded-md">
+              <span className="text-[10px] font-bold uppercase tracking-wider mt-4 px-2 py-1 bg-indigo-100/60 dark:bg-slate-800 text-indigo-500/80 dark:text-slate-400 rounded-md">
                 {targetCards.length} / {MAX_CARDS} Cards Used
               </span>
             </div>

@@ -26,12 +26,12 @@ const TargetCard = ({ card, sourceText, detectedLang, onUpdateCard, onRemoveCard
     <div 
       ref={setNodeRef}
       style={style}
-      className={`w-full lg:h-full min-h-[220px] lg:min-h-0 flex flex-col bg-slate-50/60 backdrop-blur-3xl rounded-[32px] shadow-sm border border-slate-200/60 overflow-hidden relative group transition-all hover:shadow-lg hover:border-slate-300 ${isDragging ? 'cursor-grabbing shadow-2xl ring-2 ring-indigo-500/20' : ''}`}
+      className={`w-full lg:h-full min-h-[220px] lg:min-h-0 flex flex-col bg-slate-50/60 dark:bg-slate-900/60 backdrop-blur-3xl rounded-[32px] shadow-sm border border-slate-200/60 dark:border-slate-800 overflow-hidden relative group transition-all duration-500 hover:shadow-lg dark:hover:shadow-2xl dark:hover:shadow-black/20 hover:border-slate-300 dark:hover:border-slate-700 ${isDragging ? 'cursor-grabbing shadow-2xl ring-2 ring-indigo-500/20' : ''}`}
     >
       
       {/* Decorative Glow inside TargetCard */}
-      <div className="absolute -bottom-32 -right-32 w-80 h-80 bg-indigo-400/20 blur-[80px] rounded-full pointer-events-none z-0"></div>
-      <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-pink-400/20 blur-[80px] rounded-full pointer-events-none z-0"></div>
+      <div className="absolute -bottom-32 -right-32 w-80 h-80 bg-indigo-400/20 dark:bg-indigo-600/10 blur-[80px] rounded-full pointer-events-none z-0"></div>
+      <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-pink-400/20 dark:bg-purple-600/10 blur-[80px] rounded-full pointer-events-none z-0"></div>
 
       <div className="relative z-10 flex flex-col h-full min-h-0">
         <HeadCard 

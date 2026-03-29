@@ -27,6 +27,7 @@ export const appendTranslationHistory = async (uid, historyItemsArray) => {
     // Map the new items and give them IDs
     const newItems = historyItemsArray.map(item => ({
       ...item,
+      date: Date.now(),
       id: Date.now().toString() + Math.random().toString(36).substr(2, 5) // Unique ID
     }));
 

@@ -23,6 +23,7 @@ export const addSavedWord = async (uid, wordItem) => {
 
     savedWords.unshift({
       ...wordItem,
+      date: Date.now(),
       id: Date.now().toString() + Math.random().toString(36).substr(2, 5)
     });
 

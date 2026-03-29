@@ -96,6 +96,10 @@ input:focus-visible {
   color: #334155;
 }
 
+.dark .tiptap-editor .ProseMirror p {
+  color: #94a3b8; /* slate-400 */
+}
+
 .tiptap-editor .ProseMirror h2 {
   font-size: 1.35rem;
   font-weight: 800;
@@ -103,8 +107,16 @@ input:focus-visible {
   margin: 1em 0 0.5em;
 }
 
+.dark .tiptap-editor .ProseMirror h2 {
+  color: #f1f5f9; /* slate-100 */
+}
+
 .tiptap-editor .ProseMirror strong {
   font-weight: 700;
+}
+
+.dark .tiptap-editor .ProseMirror strong {
+  color: #cbd5e1; /* slate-300 */
 }
 
 .tiptap-editor .ProseMirror em {
@@ -124,7 +136,11 @@ input:focus-visible {
 .tiptap-editor .ProseMirror hr {
   border: none;
   border-top: 2px solid #e2e8f0;
-  margin: 1em 0;
+  margin: 1.5em 0;
+}
+
+.dark .tiptap-editor .ProseMirror hr {
+  border-top: 1px solid rgba(148, 163, 184, 0.15); /* Slate-400 with 15% opacity for a subtle premium line */
 }
 
 .tiptap-editor .ProseMirror ul,

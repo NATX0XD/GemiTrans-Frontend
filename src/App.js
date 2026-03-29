@@ -33,9 +33,9 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8fafc]">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8fafc] dark:bg-slate-950 transition-colors duration-700">
         <div className="relative mb-6">
-          <div className="w-20 h-20 rounded-3xl bg-white shadow-xl flex items-center justify-center animate-bounce duration-1000">
+          <div className="w-20 h-20 rounded-3xl bg-white dark:bg-slate-900 shadow-xl dark:shadow-black/50 border border-transparent dark:border-slate-800 flex items-center justify-center animate-bounce duration-1000">
             <Languages className="text-teal-500" size={40} />
           </div>
           <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white shadow-lg animate-pulse">
@@ -43,8 +43,8 @@ function App() {
           </div>
         </div>
         <div className="flex flex-col items-center gap-2">
-          <h1 className="text-2xl font-black text-slate-800 tracking-tight">AI Workbench</h1>
-          <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.2em] animate-pulse">Loading ...</p>
+          <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight transition-colors">AI Workbench</h1>
+          <p className="text-slate-400 dark:text-slate-600 font-bold text-xs uppercase tracking-[0.2em] animate-pulse">Loading ...</p>
         </div>
       </div>
     );

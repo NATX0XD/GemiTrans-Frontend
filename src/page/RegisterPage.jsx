@@ -25,16 +25,16 @@ const CustomSelect = ({ label, icon: Icon, placeholder, value, onChange, options
 
   return (
     <div className="space-y-1.5 w-full">
-      <label className="block text-sm font-semibold text-slate-700 ml-1">{label}</label>
+      <label className="block text-sm font-semibold text-slate-700 dark:text-slate-400 ml-1">{label}</label>
       <div className="relative" ref={dropdownRef}>
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full h-12 px-3 bg-white border-1.5 border-slate-300 hover:border-indigo-300 rounded-2xl transition-all shadow-sm flex items-center justify-between text-left focus:outline-none focus:border-indigo-500 ${isOpen ? 'border-indigo-500 ring-2 ring-indigo-500/20' : ''}`}
+          className={`w-full h-12 px-3 bg-white dark:bg-slate-800 border-1.5 border-slate-300 dark:border-slate-700 hover:border-indigo-300 rounded-2xl transition-all shadow-sm flex items-center justify-between text-left focus:outline-none focus:border-indigo-500 ${isOpen ? 'border-indigo-500 ring-2 ring-indigo-500/20' : ''}`}
         >
           <div className="flex items-center truncate overflow-hidden">
-             {Icon && <Icon className="w-4 h-4 text-slate-400 mr-2 shrink-0" />}
-             <span className={`text-sm tracking-wide truncate ${value ? 'text-slate-800 font-medium' : 'text-slate-400'}`}>
+             {Icon && <Icon className="w-4 h-4 text-slate-400 dark:text-slate-500 mr-2 shrink-0" />}
+             <span className={`text-sm tracking-wide truncate ${value ? 'text-slate-800 dark:text-slate-100 font-medium' : 'text-slate-400 dark:text-slate-600'}`}>
                {selectedLabel}
              </span>
           </div>
@@ -42,7 +42,7 @@ const CustomSelect = ({ label, icon: Icon, placeholder, value, onChange, options
         </button>
 
         {isOpen && (
-          <div className="absolute top-full mt-2 left-0 right-0 bg-white rounded-2xl shadow-[0_15px_40px_-5px_rgba(0,0,0,0.15)] border border-slate-100 p-2 z-50 flex flex-col gap-1 max-h-60 overflow-y-auto">
+          <div className="absolute top-full mt-2 left-0 right-0 bg-white dark:bg-slate-900 rounded-2xl shadow-[0_15px_40px_-5px_rgba(0,0,0,0.15)] dark:shadow-black/50 border border-slate-100 dark:border-slate-800 p-2 z-50 flex flex-col gap-1 max-h-60 overflow-y-auto">
             {options.map((obj) => {
               const isSelected = value === obj.value;
               return (
@@ -56,7 +56,7 @@ const CustomSelect = ({ label, icon: Icon, placeholder, value, onChange, options
                   className={`flex items-center justify-between w-full px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border-0 cursor-pointer outline-none ${
                     isSelected 
                       ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30' 
-                      : 'bg-transparent text-slate-700 hover:bg-slate-100'
+                      : 'bg-transparent text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200'
                   }`}
                 >
                   <span className="truncate">{obj.label}</span>
@@ -162,15 +162,15 @@ const RegisterPage = () => {
   };
 
   const StepperIndicator = () => (
-    <div className="flex justify-center items-center gap-3 mb-10 w-full px-6">
+    <div className="flex justify-center items-center gap-3 mb-10 w-full px-6 transition-all">
       {[1, 2, 3].map((num) => (
         <div key={num} className="flex items-center gap-3 flex-1 last:flex-none">
-          <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold transition-all duration-300 shadow-sm ${step >= num ? 'bg-slate-900 text-white scale-110 shadow-slate-900/20' : 'bg-slate-100 text-slate-400'}`}>
+          <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold transition-all duration-300 shadow-sm ${step >= num ? 'bg-slate-900 dark:bg-indigo-600 text-white scale-110 shadow-slate-900/20 dark:shadow-indigo-900/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600'}`}>
             {num}
           </div>
           {num < 3 && (
-            <div className="h-[2px] flex-1 bg-slate-100 rounded-full overflow-hidden">
-              <div className={`h-full bg-slate-900 transition-all duration-500 ease-in-out ${step > num ? 'w-full' : 'w-0'}`}></div>
+            <div className="h-[2px] flex-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+              <div className={`h-full bg-slate-900 dark:bg-indigo-600 transition-all duration-500 ease-in-out ${step > num ? 'w-full' : 'w-0'}`}></div>
             </div>
           )}
         </div>
@@ -179,12 +179,12 @@ const RegisterPage = () => {
   );
 
   const sharedInputClasses = {
-    inputWrapper: "bg-white border-1.5 border-slate-300 hover:border-indigo-300 data-[focus=true]:border-indigo-500 data-[focus=true]:bg-white transition-all shadow-sm rounded-2xl h-12",
-    input: "text-sm text-slate-800 placeholder:text-slate-400 font-medium"
+    inputWrapper: "bg-white dark:bg-slate-800/50 border-1.5 border-slate-300 dark:border-slate-700 hover:border-indigo-300 data-[focus=true]:border-indigo-500 data-[focus=true]:bg-white dark:data-[focus=true]:bg-slate-800/70 transition-all shadow-sm rounded-2xl h-12",
+    input: "text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 font-medium"
   };
 
   return (
-    <div className="w-full max-w-lg p-8 sm:p-10 bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-indigo-500/10 rounded-[2.5rem] relative overflow-hidden">
+    <div className="w-full max-w-lg p-8 sm:p-10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-slate-800 shadow-2xl shadow-indigo-500/10 dark:shadow-black/40 rounded-[2.5rem] relative overflow-hidden transition-colors duration-500">
       
       {/* Decorative gradient blob */}
       <div className="absolute -top-32 -right-32 w-64 h-64 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
@@ -192,8 +192,8 @@ const RegisterPage = () => {
 
       <div className="relative z-10">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold font-sans text-slate-900 tracking-tight">Create Account</h1>
-          <p className="text-sm text-slate-500 mt-2 font-medium">Join Translation Workbench today</p>
+          <h1 className="text-3xl font-bold font-sans text-slate-900 dark:text-slate-100 tracking-tight transition-colors">Create Account</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-500 mt-2 font-medium transition-colors">Join Translation Workbench today</p>
         </div>
 
         <StepperIndicator />
@@ -212,7 +212,7 @@ const RegisterPage = () => {
             <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-500">
               <div className="flex gap-4">
                 <div className="space-y-1.5 w-full">
-                  <label className="block text-sm font-semibold text-slate-700 ml-1">First Name</label>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-400 ml-1">First Name</label>
                   <Input
                     variant="faded"
                     name="firstName"
@@ -225,7 +225,7 @@ const RegisterPage = () => {
                   />
                 </div>
                 <div className="space-y-1.5 w-full">
-                  <label className="block text-sm font-semibold text-slate-700 ml-1">Last Name</label>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-400 ml-1">Last Name</label>
                   <Input
                     variant="faded"
                     name="lastName"
@@ -238,7 +238,7 @@ const RegisterPage = () => {
                 </div>
               </div>
               <div className="space-y-1.5 w-full">
-                <label className="block text-sm font-semibold text-slate-700 ml-1">Username</label>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-400 ml-1">Username</label>
                 <Input
                   variant="faded"
                   name="username"
@@ -288,9 +288,9 @@ const RegisterPage = () => {
               </div>
 
               <div className="flex gap-4 mt-4 pt-2">
-                <Button type="button" onClick={handleBack} variant="flat" className="w-1/3 bg-slate-100/80 text-slate-700 font-medium rounded-2xl py-6 hover:bg-slate-200/80">
+                <button type="button" onClick={handleBack} className="w-1/3 h-12 bg-slate-100/80 dark:bg-slate-800 text-slate-700 dark:text-slate-400 font-medium rounded-2xl hover:bg-slate-200/80 dark:hover:bg-slate-700 transition-all border-none cursor-pointer">
                   Back
-                </Button>
+                </button>
                 <Button type="submit" color="primary" className="w-2/3 bg-slate-900 text-white font-medium rounded-2xl py-6 hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] transition-all">
                   Next Step
                 </Button>
@@ -302,7 +302,7 @@ const RegisterPage = () => {
           {step === 3 && (
             <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-500">
               <div className="space-y-1.5 w-full">
-                <label className="block text-sm font-semibold text-slate-700 ml-1">Email Address</label>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-400 ml-1">Email Address</label>
                 <Input
                   type="email"
                   variant="faded"
@@ -317,7 +317,7 @@ const RegisterPage = () => {
               </div>
               
               <div className="space-y-1.5 w-full">
-                <label className="block text-sm font-semibold text-slate-700 ml-1">Password</label>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-400 ml-1">Password</label>
                 <Input
                   variant="faded"
                   type={isVisible ? "text" : "password"}
@@ -341,7 +341,7 @@ const RegisterPage = () => {
               </div>
 
               <div className="space-y-1.5 w-full">
-                <label className="block text-sm font-semibold text-slate-700 ml-1">Confirm Password</label>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-400 ml-1">Confirm Password</label>
                 <Input
                   variant="faded"
                   type={isVisible ? "text" : "password"}
@@ -356,9 +356,9 @@ const RegisterPage = () => {
               </div>
 
               <div className="flex gap-4 mt-4 pt-2">
-                <Button type="button" isDisabled={loading} onClick={handleBack} variant="flat" className="w-1/3 bg-slate-100/80 text-slate-700 font-medium rounded-2xl py-6 hover:bg-slate-200/80">
+                <button type="button" disabled={loading} onClick={handleBack} className="w-1/3 h-12 bg-slate-100/80 dark:bg-slate-800 text-slate-700 dark:text-slate-400 font-medium rounded-2xl hover:bg-slate-200/80 dark:hover:bg-slate-700 transition-all border-none cursor-pointer disabled:opacity-50">
                   Back
-                </Button>
+                </button>
                 <Button type="submit" color="primary" isLoading={loading} className="w-2/3 bg-primary text-white font-medium rounded-2xl py-6 shadow-[0_4px_14px_0_rgb(124,58,237,0.3)] hover:shadow-[0_6px_20px_rgba(124,58,237,0.4)] transition-all">
                   {loading ? 'Creating...' : 'Create Account'}
                 </Button>
@@ -367,9 +367,9 @@ const RegisterPage = () => {
           )}
         </form>
 
-        <p className="mt-10 text-center text-sm text-slate-500 font-medium">
+        <p className="mt-10 text-center text-sm text-slate-500 dark:text-slate-500 font-medium transition-colors">
           Already have an account?{' '}
-          <Link to="/login" className="text-slate-900 border-b border-slate-900 pb-0.5 hover:opacity-70 transition-opacity">
+          <Link to="/login" className="text-slate-900 dark:text-slate-100 border-b border-slate-900 dark:border-slate-100 pb-0.5 hover:opacity-70 transition-opacity">
             Sign in
           </Link>
         </p>
