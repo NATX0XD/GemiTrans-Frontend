@@ -1,0 +1,25 @@
+export const availableLanguages = [
+    { label: 'English', value: 'English', category: 'Standard' },
+    { label: 'Japanese', value: 'Japanese', category: 'Standard' },
+    { label: 'Korean', value: 'Korean', category: 'Standard' },
+    { label: 'Chinese (Simplified)', value: 'Chinese (Simplified)', category: 'Standard' },
+    { label: 'Chinese (Traditional)', value: 'Chinese (Traditional)', category: 'Standard' },
+    { label: 'Thai', value: 'Thai', category: 'Standard' },
+    { label: 'Vietnamese', value: 'Vietnamese', category: 'Standard' },
+    { label: 'Indonesian', value: 'Indonesian', category: 'Standard' },
+    { label: 'Spanish', value: 'Spanish', category: 'Standard' },
+    { label: 'French', value: 'French', category: 'Standard' },
+    { label: 'German', value: 'German', category: 'Standard' },
+    { label: 'Russian', value: 'Russian', category: 'Standard' },
+    { label: 'Portuguese', value: 'Portuguese', category: 'Standard' },
+    { label: 'Italian', value: 'Italian', category: 'Standard' },
+    { label: 'Arabic', value: 'Arabic', category: 'Standard' },
+    { label: 'Hindi', value: 'Hindi', category: 'Standard' },
+    // Special languages
+    { label: 'วัยรุ่นตี้ (Gen Z)', value: 'Thai Gen Z slang', category: 'Special & Fun' },
+    { label: 'ย้อนยุคอยุธยา', value: 'Ancient Royal Thai (Ayutthaya era)', category: 'Special & Fun' },
+    { label: 'สายมูเตลู', value: 'Thai mystical and astrologer style', category: 'Special & Fun' },
+    { label: 'ภาษาอีสาน', value: 'Isan (Northeastern Thai dialect)', category: 'Special & Fun' },
+    { label: 'ภาษาเหนือ', value: 'Northern Thai dialect', category: 'Special & Fun' },
+    { label: 'ภาษาใต้', value: 'Southern Thai dialect', category: 'Special & Fun' }
+];

@@ -1,0 +1,138 @@
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ==========================================
+   Minimal Scrollbar สำหรับทุก Browser
+   ========================================== */
+
+/* 1. สำหรับ Firefox */
+* {
+  scrollbar-width: thin;
+  /* ทำให้เส้นบางลง */
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  /* สีของแถบเลื่อน และ สีพื้นหลัง(โปร่งใส) */
+}
+
+/* 2. สำหรับ Chrome, Edge, Safari (WebKit) */
+*::-webkit-scrollbar {
+  width: 6px;
+  /* ความกว้างของ Scrollbar แนวตั้ง */
+  height: 6px;
+  /* ความสูงของ Scrollbar แนวนอน */
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+  /* พื้นหลังโปร่งใส เนียนไปกับหน้าเว็บ */
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.15);
+  /* สีเทาอ่อนๆ โปร่งใส */
+  border-radius: 10px;
+  /* ขอบมน */
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  /* เข้มขึ้นนิดหน่อยตอนเอาเมาส์ชี้ */
+}
+
+/* ซ่อน Scrollbar ในบางจุดที่เราไม่ต้องการให้เห็นเลย (ถ้ามี) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ==========================================
+   Override HeroUI default focus ring / outline
+   on all Input, Textarea, Select components
+   ========================================== */
+[data-focus-visible=true],
+[data-focus=true] {
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-color: transparent !important;
+}
+
+textarea:focus,
+input:focus,
+textarea:focus-visible,
+input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================
+   TipTap Rich Text Editor Styles
+   ========================================== */
+.tiptap-editor .ProseMirror {
+  outline: none !important;
+  min-height: 200px;
+}
+
+.tiptap-editor .ProseMirror p {
+  margin: 0.5em 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #334155;
+}
+
+.tiptap-editor .ProseMirror h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 1em 0 0.5em;
+}
+
+.tiptap-editor .ProseMirror strong {
+  font-weight: 700;
+}
+
+.tiptap-editor .ProseMirror em {
+  font-style: italic;
+}
+
+.tiptap-editor .ProseMirror u {
+  text-decoration: underline;
+}
+
+.tiptap-editor .ProseMirror mark {
+  background-color: #fef08a;
+  border-radius: 3px;
+  padding: 1px 3px;
+}
+
+.tiptap-editor .ProseMirror hr {
+  border: none;
+  border-top: 2px solid #e2e8f0;
+  margin: 1em 0;
+}
+
+.tiptap-editor .ProseMirror ul,
+.tiptap-editor .ProseMirror ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+
+.tiptap-editor .ProseMirror li {
+  margin: 0.2em 0;
+}
