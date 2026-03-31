@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchNotes, removeNote } from '../../services/notesService';
 import { auth } from '../../configuration/firebase';
-import { BookOpen, Loader2, Trash2, Pencil, Search, Calendar } from 'lucide-react';
+import { BookOpen, Trash2, Pencil, Search, Calendar } from 'lucide-react';
 import ConfirmModal from '../Main/Modal/ConfirmModal';
 import { SkeletonGrid, SkeletonHeader } from '../Main/Loader/SkeletonCard';
 import { Pagination, Button } from '@heroui/react';
@@ -11,7 +11,6 @@ import DataTable from '../Common/DataTable';
 const NotebookContainer = ({ onEditNote, title, description }) => {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isDeletingId, setIsDeletingId] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   
   // Filtering & View State

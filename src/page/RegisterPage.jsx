@@ -203,7 +203,6 @@ const RegisterPage = () => {
   );
 
   const inputCls = "w-full h-11 pl-10 pr-4 bg-slate-50 border border-slate-200 hover:border-indigo-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/10 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 font-medium transition-all outline-none";
-  const inputClsNoIcon = "w-full h-11 px-4 bg-slate-50 border border-slate-200 hover:border-indigo-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/10 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 font-medium transition-all outline-none";
 
   return (
     <div className="w-full max-w-lg mx-auto">

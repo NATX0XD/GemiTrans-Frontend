@@ -1,6 +1,6 @@
 import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion';
-import { Languages, Loader2, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Languages, Sparkles } from 'lucide-react';
 const Loading = () => {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8fafc] dark:bg-slate-950 transition-colors duration-700 overflow-hidden relative">
