@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { fetchNotes, removeNote } from '../../services/notesService';
 import { auth } from '../../configuration/firebase';
-import { BookOpen, Loader2, Trash2, Pencil, Search, Info, Calendar } from 'lucide-react';
+import { BookOpen, Loader2, Trash2, Pencil, Search, Calendar } from 'lucide-react';
 import ConfirmModal from '../Main/Modal/ConfirmModal';
 import { SkeletonGrid } from '../Main/Loader/SkeletonCard';
-import { Pagination, Button, User } from '@heroui/react';
+import { Pagination, Button } from '@heroui/react';
 import ContentFilter from '../Common/ContentFilter';
 import DataTable from '../Common/DataTable';
 

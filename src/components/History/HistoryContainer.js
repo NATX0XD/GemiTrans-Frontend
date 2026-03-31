@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { fetchTranslationHistory, removeTranslationHistory } from '../../services/historyService';
 import { auth } from '../../configuration/firebase';
-import { Clock, Languages, SlidersHorizontal, Loader2, Copy, Check, Trash2, Info, Calendar } from 'lucide-react';
+import { Clock, Languages, SlidersHorizontal, Loader2, Copy, Check, Trash2, Info } from 'lucide-react';
 import ConfirmModal from '../Main/Modal/ConfirmModal';
 import { SkeletonGrid } from '../Main/Loader/SkeletonCard';
-import { Pagination, Button, Tooltip, user } from '@heroui/react';
+import { Pagination, Button } from '@heroui/react';
 import TranslationDetailModal from '../Main/Modal/TranslationDetailModal';
 import ContentFilter from '../Common/ContentFilter';
 import DataTable from '../Common/DataTable';

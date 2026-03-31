@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, MessageCircle, Bell, ChevronDown, LogOut } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Settings, MessageCircle, Bell, ChevronDown, LogOut, Sparkles } from 'lucide-react';
 import { auth } from '../../../configuration/firebase';
 import { signOut } from 'firebase/auth';
 import SettingsModal from '../Modal/SettingsModal';
@@ -77,6 +78,16 @@ const MiniProfile = () => {
                   <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate">{email}</span>
                 </div>
               </div>
+
+              {/* Upgrade Plan */}
+              <Link 
+                to="/pricing"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-colors cursor-pointer outline-none border-0 text-sm font-bold no-underline group mb-1"
+              >
+                <Sparkles size={16} className="group-hover:rotate-12 transition-transform" />
+                Upgrade Plan
+              </Link>
 
               {/* Logout */}
               <button

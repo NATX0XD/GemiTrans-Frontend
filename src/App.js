@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './configuration/firebase';
-import { Languages, Loader2, Sparkles } from 'lucide-react';
+
 
 // Import Layouts
 import MainLayout from './layout/MainLayout';
@@ -18,6 +18,9 @@ import LoginPage from './page/LoginPage';
 import RegisterPage from './page/RegisterPage';
 import PageNotFound from './page/PageNotFound';
 import { DataProvider } from './context/DataContext';
+import LandingPage from './page/LandingPage';
+import PricingPage from './page/PricingPage';
+import Loading from './page/Loading';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -33,20 +36,7 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8fafc] dark:bg-slate-950 transition-colors duration-700">
-        <div className="relative mb-6">
-          <div className="w-20 h-20 rounded-3xl bg-white dark:bg-slate-900 shadow-xl dark:shadow-black/50 border border-transparent dark:border-slate-800 flex items-center justify-center animate-bounce duration-1000">
-            <Languages className="text-teal-500" size={40} />
-          </div>
-          <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white shadow-lg animate-pulse">
-            <Loader2 size={16} className="animate-spin" />
-          </div>
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight transition-colors">AI Workbench</h1>
-          <p className="text-slate-400 dark:text-slate-600 font-bold text-xs uppercase tracking-[0.2em] animate-pulse">Loading ...</p>
-        </div>
-      </div>
+      <Loading />
     );
   }
 
@@ -55,20 +45,25 @@ function App() {
       <Router>
         <Routes>
 
+          {/* Landing Page (Public) */}
+          <Route path="/" element={!currentUser ? <LandingPage /> : <Navigate to="/app" />} />
+
           {/* กลุ่ม Auth Routes (ไม่มี Header/Sidebar) */}
-          <Route element={currentUser ? <Navigate to="/" /> : <AuthLayout />}>
+          <Route element={currentUser ? <Navigate to="/app" /> : <AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
           </Route>
 
           {/* กลุ่ม Main App Routes (มี Header/Sidebar) */}
           <Route element={currentUser ? <MainLayout /> : <Navigate to="/login" />}>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/app" element={<HomePage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/saved" element={<SavedWordsPage />} />
             <Route path="/notes" element={<NotebookPage />} />
-            {/* ถ้ามีหน้าอื่นๆ เช่น <Route path="/users" element={<UsersPage />} /> ก็เอามาใส่ตรงนี้ได้เลย */}
           </Route>
+
+          {/* Dedicated Pricing Page (New Layout) */}
+          <Route path="/pricing" element={<PricingPage />} />
 
           {/* 404 Not Found */}
           <Route path="*" element={<PageNotFound />} />
