@@ -42,7 +42,7 @@ const Footer = () => {
                         &copy; {new Date().getFullYear()} {process.env.REACT_APP_NAME}. All rights reserved.
                     </p>
                     <div className="text-sm border border-slate-100 rounded-full px-4 py-1.5 text-slate-400 font-medium bg-slate-50">
-                        System Status: <span className="text-emerald-500 font-bold inline-flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Operational</span>
+                        Powered by <span className="text-emerald-500 font-bold inline-flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>  GEMINI</span>
                     </div>
                 </div>
             </div>

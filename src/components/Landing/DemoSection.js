@@ -63,8 +63,8 @@ const DemoSection = () => {
                 {/* Header */}
                 <div className="text-center max-w-3xl mx-auto mb-16">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-[10px] font-black uppercase tracking-widest mb-6">
-                        <Sparkles size={12} />
-                        <span>Try the Difference</span>
+                        <Sparkles size={12} fill="currentColor" />
+                        <span>Intelligence by GEMINI</span>
                     </div>
                     <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-4 md:mb-6 leading-tight">
                         Translation that understands <span className="text-indigo-600 font-black italic">context.</span>
@@ -186,7 +186,10 @@ const DemoSection = () => {
                                     <div className="w-2 md:w-2.5 h-2 md:h-2.5 rounded-full bg-amber-500/80"></div>
                                     <div className="w-2 md:w-2.5 h-2 md:h-2.5 rounded-full bg-emerald-500/80"></div>
                                 </div>
-                                <div className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest">Live Preview</div>
+                                <div className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                                    GEMINI
+                                </div>
                                 <div className="w-4 md:w-6"></div>
                             </div>
 

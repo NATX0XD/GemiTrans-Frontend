@@ -45,16 +45,14 @@ function App() {
       <Router>
         <Routes>
 
-          {/* Landing Page (Public) */}
+         
           <Route path="/" element={!currentUser ? <LandingPage /> : <Navigate to="/app" />} />
 
-          {/* กลุ่ม Auth Routes (ไม่มี Header/Sidebar) */}
           <Route element={currentUser ? <Navigate to="/app" /> : <AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
           </Route>
 
-          {/* กลุ่ม Main App Routes (มี Header/Sidebar) */}
           <Route element={currentUser ? <MainLayout /> : <Navigate to="/login" />}>
             <Route path="/app" element={<HomePage />} />
             <Route path="/history" element={<HistoryPage />} />
@@ -62,10 +60,8 @@ function App() {
             <Route path="/notes" element={<NotebookPage />} />
           </Route>
 
-          {/* Dedicated Pricing Page (New Layout) */}
           <Route path="/pricing" element={<PricingPage />} />
 
-          {/* 404 Not Found */}
           <Route path="*" element={<PageNotFound />} />
 
         </Routes>

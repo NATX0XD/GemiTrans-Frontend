@@ -88,8 +88,14 @@ const HeroSection = () => {
                     transition={{ delay: 0.2, duration: 0.5 }}
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 border border-slate-200/60 shadow-sm backdrop-blur-md text-indigo-700 text-xs font-bold uppercase tracking-widest mb-8"
                 >
-                    <Languages size={14} className="text-indigo-500" />
-                    <span>Next-Gen Translation AI</span>
+                    <div className="flex items-center gap-2">
+                        <Languages size={14} className="text-indigo-500" />
+                        <span>Intelligence by</span>
+                        <div className="flex items-center gap-1.5 ml-0.5">
+                            <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></div>
+                            <span className="text-indigo-600 font-extrabold tracking-normal">GEMINI</span>
+                        </div>
+                    </div>
                 </motion.div>
 
                 {/* Headline */}
