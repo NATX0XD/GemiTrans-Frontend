@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Zap, Sparkles, TrendingUp, ShieldCheck, Languages } from 'lucide-react';
+import { X, Sparkles, TrendingUp, ShieldCheck, Languages } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const QuotaExceededModal = ({ isOpen, onClose }) => {

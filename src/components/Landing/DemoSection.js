@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Globe2, MessageCircle, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Sparkles, Globe2, MessageCircle, Zap } from 'lucide-react';
 
 const demoData = {
     japanese: {
@@ -52,7 +52,6 @@ const demoData = {
 const DemoSection = () => {
     const [selectedLang, setSelectedLang] = useState('japanese');
     const [toneIndex, setToneIndex] = useState(1); // Default to Business/Neutral
-    const [isHovered, setIsHovered] = useState(null);
 
     const currentData = demoData[selectedLang];
     const currentTone = currentData.tones[toneIndex];

@@ -5,8 +5,7 @@ import {
   TableBody, 
   TableColumn, 
   TableRow, 
-  TableCell,
-  Tooltip
+  TableCell
 } from '@heroui/react';
 
 const DataTable = ({ 

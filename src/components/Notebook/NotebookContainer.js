@@ -3,7 +3,7 @@ import { fetchNotes, removeNote } from '../../services/notesService';
 import { auth } from '../../configuration/firebase';
 import { BookOpen, Loader2, Trash2, Pencil, Search, Calendar } from 'lucide-react';
 import ConfirmModal from '../Main/Modal/ConfirmModal';
-import { SkeletonGrid } from '../Main/Loader/SkeletonCard';
+import { SkeletonGrid, SkeletonHeader } from '../Main/Loader/SkeletonCard';
 import { Pagination, Button } from '@heroui/react';
 import ContentFilter from '../Common/ContentFilter';
 import DataTable from '../Common/DataTable';
@@ -25,20 +25,24 @@ const NotebookContainer = ({ onEditNote, title, description }) => {
 
   const handleDelete = async (noteId) => {
     if (!auth.currentUser) return;
+    
+    // 1. Optimistic Update: Remove from local state immediately
+    const noteToDelete = notes.find(n => n.id === noteId);
+    setNotes(prev => prev.filter(n => n.id !== noteId));
     setConfirmDeleteId(null);
-    setIsDeletingId(noteId);
+    
     try {
-      const updated = await removeNote(auth.currentUser.uid, noteId);
-      setNotes(updated);
-      
-      const newTotalPages = Math.ceil(updated.length / itemsPerPage);
-      if (currentPage > newTotalPages && newTotalPages > 0) {
-        setCurrentPage(newTotalPages);
-      }
+      // 2. Perform backend removal
+      await removeNote(auth.currentUser.uid, noteId);
+      // Backend successful, list is already updated locally
     } catch (error) {
       console.error("Failed to delete note", error);
+      // 3. Rollback on failure: Add the note back
+      if (noteToDelete) {
+        setNotes(prev => [noteToDelete, ...prev].sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0)));
+      }
+      alert("Failed to delete note. Please try again.");
     }
-    setIsDeletingId(null);
   };
 
   useEffect(() => {
@@ -57,7 +61,12 @@ const NotebookContainer = ({ onEditNote, title, description }) => {
   }, []);
 
   if (loading) {
-    return <SkeletonGrid count={6} />;
+    return (
+      <>
+        <SkeletonHeader showSearch={true} />
+        <SkeletonGrid count={6} />
+      </>
+    );
   }
 
   // Strip HTML tags for preview and filtering
@@ -119,7 +128,7 @@ const NotebookContainer = ({ onEditNote, title, description }) => {
             <Button isIconOnly size="sm" variant="flat" onPress={() => onEditNote && onEditNote(note)} className="bg-teal-50 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400">
                <Pencil size={16} />
             </Button>
-            <Button isIconOnly size="sm" variant="flat" onPress={() => setConfirmDeleteId(note.id)} className="bg-red-50 dark:bg-red-950/30 text-red-400 hover:text-red-500 transition-colors">
+            <Button isIconOnly size="sm" variant="flat" onPress={() => setConfirmDeleteId(note.id)} className="bg-teal-50 dark:bg-red-950/30 text-teal-500 hover:text-red-500 transition-colors">
                <Trash2 size={16} />
             </Button>
           </div>
@@ -171,14 +180,6 @@ const NotebookContainer = ({ onEditNote, title, description }) => {
             >
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-400 to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               
-              <button 
-                onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(note.id); }}
-                disabled={isDeletingId === note.id}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-teal-50/50 dark:bg-slate-800/50 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-900/30 text-teal-300 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 flex items-center justify-center transition-all cursor-pointer border-none"
-              >
-                {isDeletingId === note.id ? <Loader2 size={14} className="animate-spin text-red-400" /> : <Trash2 size={14} />}
-              </button>
-
               <div className="flex items-start justify-between gap-4 mb-3">
                 <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 line-clamp-2 flex-1 leading-snug">
                   {note.title || 'Untitled Note'}
@@ -192,10 +193,19 @@ const NotebookContainer = ({ onEditNote, title, description }) => {
                 {stripHtml(note.content)}
               </div>
 
-              <div className="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between opacity-60 group-hover:opacity-100 transition-opacity">
+              <div className="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between">
                 <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Notebook</span>
-                <div className="flex items-center gap-1.5 text-teal-600 dark:text-teal-400 font-bold text-[10px] uppercase tracking-wider">
-                  Details <Pencil size={10} />
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5 text-teal-600 dark:text-teal-400 font-bold text-[10px] uppercase tracking-wider opacity-60 group-hover:opacity-100 transition-opacity">
+                    Details <Pencil size={10} />
+                  </div>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(note.id); }}
+                    className="w-7 h-7 rounded-lg bg-teal-50 dark:bg-slate-800/80 text-teal-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center justify-center transition-all cursor-pointer border-none shadow-sm"
+                    title="Delete Note"
+                  >
+                    <Trash2 size={12} />
+                  </button>
                 </div>
               </div>
             </div>

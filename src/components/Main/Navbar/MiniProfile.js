@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Settings, MessageCircle, Bell, ChevronDown, LogOut, Sparkles } from 'lucide-react';
+import { Settings, Bell, ChevronDown, LogOut, Sparkles } from 'lucide-react';
 import { auth } from '../../../configuration/firebase';
 import { signOut } from 'firebase/auth';
 import SettingsModal from '../Modal/SettingsModal';

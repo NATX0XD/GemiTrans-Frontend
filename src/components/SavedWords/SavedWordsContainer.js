@@ -3,7 +3,7 @@ import { fetchSavedWords, removeSavedWord } from '../../services/savedWordsServi
 import { auth } from '../../configuration/firebase';
 import { Bookmark, Languages, Loader2, Copy, Check, Trash2, Info } from 'lucide-react';
 import ConfirmModal from '../Main/Modal/ConfirmModal';
-import { SkeletonGrid } from '../Main/Loader/SkeletonCard';
+import { SkeletonGrid, SkeletonHeader } from '../Main/Loader/SkeletonCard';
 import { Pagination, Button } from '@heroui/react';
 import TranslationDetailModal from '../Main/Modal/TranslationDetailModal';
 import ContentFilter from '../Common/ContentFilter';
@@ -65,7 +65,12 @@ const SavedWordsContainer = ({ title, description }) => {
   }, []);
 
   if (loading) {
-    return <SkeletonGrid count={6} />;
+    return (
+      <>
+        <SkeletonHeader />
+        <SkeletonGrid count={6} />
+      </>
+    );
   }
 
   if (words.length === 0) {
@@ -159,7 +164,7 @@ const SavedWordsContainer = ({ title, description }) => {
             <button 
               onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(item.id); }}
               disabled={isDeletingId === item.id}
-              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-orange-50/50 dark:bg-slate-800/50 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-900/30 text-orange-300 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 flex items-center justify-center transition-all cursor-pointer border-none"
+              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800/80 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-300 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 flex items-center justify-center transition-all cursor-pointer border-none shadow-sm"
             >
               {isDeletingId === item.id ? <Loader2 size={14} className="animate-spin text-red-400" /> : <Trash2 size={14} />}
             </button>

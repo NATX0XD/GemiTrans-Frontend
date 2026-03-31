@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Languages, Sparkles } from 'lucide-react';
+import { ArrowRight, Languages } from 'lucide-react';
 
 const translationPairs = [
     {

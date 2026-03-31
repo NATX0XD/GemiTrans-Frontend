@@ -18,6 +18,8 @@ const NoteEditorModal = ({ isOpen, onClose, sourceText, translations = [], editN
   const [saveStatus, setSaveStatus] = useState('idle');
   const debounceTimer = useRef(null);
   
+  // [x] Implement `SkeletonHeader` in `SkeletonCard.js`
+  // [/] Update `HistoryContainer.js` with new loading state
   // If we're editing an existing note OR creating a new note from translation data, mark as edited so it saves
   const hasUserEdited = useRef(!!editNote || !!sourceText || (translations && translations.length > 0)); 
   
@@ -37,40 +39,7 @@ const NoteEditorModal = ({ isOpen, onClose, sourceText, translations = [], editN
       Highlight.configure({ multicolor: true }),
     ],
     content: editNote?.content || buildInitialContent(sourceText, translations),
-    onUpdate: () => {
-      hasUserEdited.current = true;
-      triggerAutoSave();
-    },
   });
-
-  // Auto-save on first mount if it's a new note with translation data
-  useEffect(() => {
-    if (!editNote && hasUserEdited.current && editor) {
-      triggerAutoSave();
-    }
-  }, [editor, editNote]);
-
-  function buildInitialContent(src, trans) {
-    if (!src && (!trans || trans.length === 0)) return '<p></p>';
-    let html = '';
-    if (src) html += `<p><strong>Original:</strong> ${src}</p>`;
-    if (trans && trans.length > 0) {
-      trans.forEach(t => {
-        html += `<p><strong>${t.lang}:</strong> ${t.text}</p>`;
-      });
-    }
-    html += '<hr><p></p>';
-    return html;
-  }
-
-  const triggerAutoSave = useCallback(() => {
-    if (!hasUserEdited.current) return; // Don't save if user hasn't typed
-    setSaveStatus('saving');
-    if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => {
-      performSave();
-    }, 1500);
-  }, []);
 
   const performSave = useCallback(async () => {
     if (!auth.currentUser || !editor) return;
@@ -92,12 +61,53 @@ const NoteEditorModal = ({ isOpen, onClose, sourceText, translations = [], editN
     }
   }, [editor, noteId, sourceText, translations]);
 
-  // Save when title changes (only if user has edited)
+  const triggerAutoSave = useCallback(() => {
+    if (!hasUserEdited.current) return; // Don't save if user hasn't typed
+    setSaveStatus('saving');
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      performSave();
+    }, 1500);
+  }, [performSave]);
+
+  // Handle editor updates
+  useEffect(() => {
+    if (!editor) return;
+    
+    const handleUpdate = () => {
+      hasUserEdited.current = true;
+      triggerAutoSave();
+    };
+
+    editor.on('update', handleUpdate);
+    return () => editor.off('update', handleUpdate);
+  }, [editor, triggerAutoSave]);
+
+  useEffect(() => {
+    if (!editNote && hasUserEdited.current && editor) {
+      triggerAutoSave();
+    }
+  }, [editor, editNote, triggerAutoSave]);
+
+  function buildInitialContent(src, trans) {
+    if (!src && (!trans || trans.length === 0)) return '<p></p>';
+    let html = '';
+    if (src) html += `<p><strong>Original:</strong> ${src}</p>`;
+    if (trans && trans.length > 0) {
+      trans.forEach(t => {
+        html += `<p><strong>${t.lang}:</strong> ${t.text}</p>`;
+      });
+    }
+    html += '<hr><p></p>';
+    return html;
+  }
+
+
   useEffect(() => {
     if (hasUserEdited.current && editor) {
       triggerAutoSave();
     }
-  }, [title]);
+  }, [title, editor, triggerAutoSave]);
 
   // Cleanup
   useEffect(() => {

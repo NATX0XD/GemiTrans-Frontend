@@ -57,7 +57,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
     };
 
     fetchSettings();
-  }, [isOpen, auth.currentUser]); // Re-fetch when modal opens or user changes
+  }, [isOpen, theme]); // Re-fetch when modal opens or theme changes
 
   if (!isOpen) return null;
 
