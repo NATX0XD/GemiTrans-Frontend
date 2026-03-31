@@ -15,11 +15,16 @@ export const translateTextAPI = async (payload) => {
       body: JSON.stringify(payload),
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-      throw new Error(`API error: ${response.status} ${response.statusText}`);
+      // Create a rich error object for the caller
+      const error = new Error(data.message || `API error: ${response.status}`);
+      error.status = response.status;
+      error.data = data;
+      throw error;
     }
 
-    const data = await response.json();
     return data;
   } catch (error) {
     console.error('ControllerApi Error:', error);

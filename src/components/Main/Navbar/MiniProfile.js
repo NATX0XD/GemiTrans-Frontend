@@ -4,6 +4,7 @@ import { Settings, MessageCircle, Bell, ChevronDown, LogOut, Sparkles } from 'lu
 import { auth } from '../../../configuration/firebase';
 import { signOut } from 'firebase/auth';
 import SettingsModal from '../Modal/SettingsModal';
+import QuotaMiniBar from '../Quota/QuotaMiniBar';
 
 const MiniProfile = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +13,7 @@ const MiniProfile = () => {
 
   const user = auth.currentUser;
   const displayName = user?.displayName || 'User';
+  const shortName = displayName.split(' ')[0]; // Gets only the first name
   const email = user?.email || '';
   const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=6366f1&color=fff&bold=true&size=150`;
   const photoURL = user?.photoURL || fallbackAvatar;
@@ -56,14 +58,14 @@ const MiniProfile = () => {
 
         {/* User Dropdown Section */}
         <div className="relative" ref={dropdownRef}>
-          <button
+            <button
             onClick={() => setIsOpen(!isOpen)}
             className="flex items-center gap-2 pl-1.5 pr-2 py-1 rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-800/60 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 cursor-pointer outline-none bg-transparent"
           >
             <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
               <img src={photoURL} alt="Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
-            <span className="text-sm font-bold text-slate-700 dark:text-slate-200 max-w-[120px] truncate">{displayName}</span>
+            <span className="text-sm font-bold text-slate-700 dark:text-slate-200 max-w-[120px] truncate">{shortName}</span>
             <ChevronDown size={14} className="text-slate-400 ml-0.5" />
           </button>
 
@@ -74,10 +76,13 @@ const MiniProfile = () => {
               <div className="flex items-center gap-3 px-3 py-3 border-b border-slate-100 dark:border-slate-800 mb-1">
                 <img src={photoURL} alt="Profile" className="w-10 h-10 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700" referrerPolicy="no-referrer" />
                 <div className="flex flex-col overflow-hidden">
-                  <span className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate">{displayName}</span>
+                  <span className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate">{shortName}</span>
                   <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate">{email}</span>
                 </div>
               </div>
+
+              {/* Token Quota Display */}
+              <QuotaMiniBar />
 
               {/* Upgrade Plan */}
               <Link 

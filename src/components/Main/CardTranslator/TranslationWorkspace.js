@@ -7,6 +7,7 @@ import { auth } from '../../../configuration/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { appendTranslationHistory } from '../../../services/historyService';
 import { getUserSettings } from '../../../services/settingsService';
+import QuotaExceededModal from '../Modal/QuotaExceededModal';
 
 // DND Kit Imports
 import {
@@ -37,6 +38,8 @@ const TranslationWorkspace = forwardRef(({ onOpenLanguageModal }, ref) => {
       resultText: ''
     }
   ]);
+
+  const [showQuotaModal, setShowQuotaModal] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -147,7 +150,8 @@ const TranslationWorkspace = forwardRef(({ onOpenLanguageModal }, ref) => {
 
     const payload = {
       sourceText: sourceText,
-      targets: targetsConfig
+      targets: targetsConfig,
+      uid: auth.currentUser?.uid // Pass the UID for quota tracking
     };
 
     try {
@@ -184,9 +188,18 @@ const TranslationWorkspace = forwardRef(({ onOpenLanguageModal }, ref) => {
       }
     } catch (err) {
       console.error('Translation error:', err);
+      
+      if (err.status === 429) {
+        setShowQuotaModal(true);
+      }
+
+      const errorMessage = err.status === 429 
+        ? "⚠️ Quota Exceeded (Check Profile)"
+        : "❌ Translation failed. Please try again.";
+
       setTargetCards(cards => cards.map(c => ({
         ...c,
-        resultText: '❌ Translation failed. Please try again.',
+        resultText: errorMessage,
         loading: false
       })));
     }
@@ -256,6 +269,11 @@ const TranslationWorkspace = forwardRef(({ onOpenLanguageModal }, ref) => {
 
         </div>
       </DndContext>
+
+      <QuotaExceededModal 
+        isOpen={showQuotaModal} 
+        onClose={() => setShowQuotaModal(false)} 
+      />
     </div>
   );
 });
