@@ -4,10 +4,12 @@ import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 
 import { auth, db } from '../configuration/firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, ShieldCheck, Zap, Users, Languages } from "lucide-react";
+import { useTranslation } from '../context/LanguageContext';
 
 const appName = process.env.REACT_APP_NAME || 'AI Workbench';
 
 const LoginPage = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isVisible, setIsVisible] = useState(false);
@@ -26,7 +28,7 @@ const LoginPage = () => {
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/');
     } catch (err) {
-      setError('Invalid email or password.');
+      setError(t('auth.errorInvalidCredentials'));
     } finally {
       setLoading(false);
     }
@@ -50,16 +52,16 @@ const LoginPage = () => {
       }
       navigate('/');
     } catch (err) {
-      setError('Google sign-in failed.');
+      setError(t('auth.errorGoogleFailed'));
     } finally {
       setGoogleLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto px-4">
       {/* Card Container */}
-      <div className="bg-white rounded-[2rem] border border-slate-200/80 shadow-xl shadow-slate-200/40 p-8 md:p-10 relative overflow-hidden">
+      <div className="bg-white rounded-[2rem] border border-slate-200/80 shadow-xl shadow-slate-200/40 p-6 sm:p-8 md:p-10 relative overflow-hidden">
         {/* Subtle decorative gradient */}
         <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-indigo-100 to-violet-100 rounded-full blur-3xl opacity-60 pointer-events-none"></div>
 
@@ -69,8 +71,8 @@ const LoginPage = () => {
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white mb-5 shadow-lg shadow-indigo-600/20">
              <Languages size={25} />
             </div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Welcome back</h1>
-            <p className="text-slate-500 font-medium text-sm mt-1.5">Sign in to {appName}</p>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">{t('auth.welcomeBack')}</h1>
+            <p className="text-slate-500 font-medium text-sm mt-1.5">{t('auth.signInTo', { appName })}</p>
           </div>
 
           {/* Error */}
@@ -97,7 +99,7 @@ const LoginPage = () => {
                   <path fill="#4A90E2" d="M19.834 21c2.195-2.048 3.62-5.096 3.62-9 0-.71-.109-1.473-.272-2.182H12v4.637h6.436c-.317 1.559-1.17 2.766-2.395 3.558l3.793 2.987z" />
                   <path fill="#FBBC05" d="M5.277 14.268A7.12 7.12 0 014.909 12c0-.782.125-1.533.357-2.235L1.24 6.65A11.934 11.934 0 000 12c0 1.92.445 3.73 1.237 5.335l4.04-3.067z" />
                 </svg>
-                Continue with Google
+                {t('auth.continueWithGoogle')}
               </>
             )}
           </button>
@@ -105,19 +107,19 @@ const LoginPage = () => {
           {/* Divider */}
           <div className="flex items-center mb-6">
             <div className="flex-grow border-t border-slate-200"></div>
-            <span className="px-4 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">or with email</span>
+            <span className="px-4 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{t('auth.orWithEmail')}</span>
             <div className="flex-grow border-t border-slate-200"></div>
           </div>
 
           {/* Form */}
           <form onSubmit={handleEmailLogin} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700 ml-0.5">Email</label>
+              <label className="block text-sm font-semibold text-slate-700 ml-0.5">{t('auth.emailLabel')}</label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                 <input
                   type="email"
-                  placeholder="name@example.com"
+                  placeholder={t('auth.emailPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -127,12 +129,12 @@ const LoginPage = () => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700 ml-0.5">Password</label>
+              <label className="block text-sm font-semibold text-slate-700 ml-0.5">{t('auth.passwordLabel')}</label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                 <input
                   type={isVisible ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder={t('auth.passwordPlaceholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -150,7 +152,7 @@ const LoginPage = () => {
 
             <div className="flex justify-end">
               <Link to="#" className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 transition-colors">
-                Forgot password?
+                {t('auth.forgotPassword')}
               </Link>
             </div>
 
@@ -162,16 +164,16 @@ const LoginPage = () => {
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               ) : (
-                <>Sign In <ArrowRight size={16} /></>
+                <>{t('auth.signIn')} <ArrowRight size={16} /></>
               )}
             </button>
           </form>
 
           {/* Footer */}
           <p className="mt-6 text-center text-sm text-slate-500 font-medium">
-            Don't have an account?{' '}
+            {t('auth.noAccount')}{' '}
             <Link to="/register" className="text-indigo-600 font-bold hover:text-indigo-700 transition-colors">
-              Sign up free
+              {t('auth.signUpFree')}
             </Link>
           </p>
         </div>
@@ -181,17 +183,17 @@ const LoginPage = () => {
       <div className="mt-8 flex items-center justify-center gap-6 text-slate-400">
         <div className="flex items-center gap-2">
           <ShieldCheck size={14} className="text-emerald-500" />
-          <span className="text-xs font-semibold">SSL Encrypted</span>
+          <span className="text-xs font-semibold">{t('auth.badgeSslEncrypted')}</span>
         </div>
         <div className="w-1 h-1 rounded-full bg-slate-300"></div>
         <div className="flex items-center gap-2">
           <Zap size={14} className="text-amber-500" />
-          <span className="text-xs font-semibold">Real-time AI</span>
+          <span className="text-xs font-semibold">{t('auth.badgeRealtimeAI')}</span>
         </div>
         <div className="w-1 h-1 rounded-full bg-slate-300"></div>
         <div className="flex items-center gap-2">
           <Users size={14} className="text-indigo-500" />
-          <span className="text-xs font-semibold">Free to Use</span>
+          <span className="text-xs font-semibold">{t('auth.badgeFreeToUse')}</span>
         </div>
       </div>
     </div>

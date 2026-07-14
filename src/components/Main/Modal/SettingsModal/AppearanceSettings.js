@@ -1,8 +1,10 @@
 import React from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { Switch } from '@heroui/react';
+import { useTranslation } from '../../../../context/LanguageContext';
 
 const AppearanceSettings = ({ theme, setTheme }) => {
+  const { t } = useTranslation();
   return (
     <section className="animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="bg-slate-50/50 dark:bg-slate-950/20 rounded-[2rem] p-8 border border-slate-100 dark:border-slate-800 flex items-center justify-between transition-colors duration-500">
@@ -11,8 +13,8 @@ const AppearanceSettings = ({ theme, setTheme }) => {
             {theme === 'dark' ? <Moon size={24} /> : <Sun size={24} />}
           </div>
           <div>
-            <p className="text-sm font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest">App Theme Color</p>
-            <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1 uppercase tracking-tight">Currently using: {theme} Mode</p>
+            <p className="text-sm font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest">{t('settings.appearance.themeColor')}</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1 uppercase tracking-tight">{t('settings.appearance.currentlyUsing', { mode: t(`settings.appearance.${theme}`) })}</p>
           </div>
         </div>
         <Switch

@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom';
 import { X, Plus, FileText, Search, Loader2, ChevronRight } from 'lucide-react';
 import { auth } from '../../configuration/firebase';
 import { fetchNotes } from '../../services/notesService';
+import { useTranslation } from '../../context/LanguageContext';
 
 const NoteSelectionModal = ({ isOpen, onClose, onSelectNote, onCreateNew }) => {
+  const { t } = useTranslation();
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -46,7 +48,7 @@ const NoteSelectionModal = ({ isOpen, onClose, onSelectNote, onCreateNew }) => {
         {/* Header */}
         <div className="px-6 pt-6 pb-2">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">Save Note to...</h2>
+            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">{t('notebook.selectTitle')}</h2>
             <button 
               onClick={onClose}
               className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors border-none cursor-pointer"
@@ -60,7 +62,7 @@ const NoteSelectionModal = ({ isOpen, onClose, onSelectNote, onCreateNew }) => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
             <input 
               type="text"
-              placeholder="Search existing notes..."
+              placeholder={t('notebook.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl py-3 pl-11 pr-4 text-slate-700 dark:text-slate-100 text-sm font-medium focus:ring-2 focus:ring-teal-500 transition-all outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
@@ -79,8 +81,8 @@ const NoteSelectionModal = ({ isOpen, onClose, onSelectNote, onCreateNew }) => {
               <Plus size={20} />
             </div>
             <div className="flex-1">
-              <div className="font-bold text-slate-700 dark:text-slate-200 text-base">Create New Note</div>
-              <div className="text-slate-400 dark:text-slate-500 text-xs font-medium">Start a fresh notebook entry</div>
+              <div className="font-bold text-slate-700 dark:text-slate-200 text-base">{t('notebook.createNew')}</div>
+              <div className="text-slate-400 dark:text-slate-500 text-xs font-medium">{t('notebook.createNewDesc')}</div>
             </div>
             <ChevronRight size={18} className="text-slate-200 group-hover:text-teal-500 group-hover:translate-x-1 transition-all" />
           </button>
@@ -90,15 +92,15 @@ const NoteSelectionModal = ({ isOpen, onClose, onSelectNote, onCreateNew }) => {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-12 gap-3">
               <Loader2 className="animate-spin text-teal-500" size={32} />
-              <p className="text-slate-400 dark:text-slate-500 font-bold">Loading your notes...</p>
+              <p className="text-slate-400 dark:text-slate-500 font-bold">{t('notebook.loading')}</p>
             </div>
           ) : filteredNotes.length === 0 ? (
             <div className="text-center py-12 px-8">
-              <p className="text-slate-400 dark:text-slate-500 font-bold">No existing notes found.</p>
+              <p className="text-slate-400 dark:text-slate-500 font-bold">{t('notebook.noNotesFound')}</p>
             </div>
           ) : (
             <div className="space-y-1">
-              <p className="px-4 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">Recent Notes</p>
+              <p className="px-4 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">{t('notebook.recentNotes')}</p>
               {filteredNotes.map(note => (
                 <button 
                   key={note.id}
@@ -110,7 +112,7 @@ const NoteSelectionModal = ({ isOpen, onClose, onSelectNote, onCreateNew }) => {
                   </div>
                   <div className="flex-1 truncate">
                     <div className="font-bold text-slate-700 dark:text-slate-200 truncate text-base">{note.title}</div>
-                    <div className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider">{note.targetLang || 'Translation'}</div>
+                    <div className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider">{note.targetLang || t('notebook.translationFallback')}</div>
                   </div>
                   <ChevronRight size={18} className="text-slate-200 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />
                 </button>

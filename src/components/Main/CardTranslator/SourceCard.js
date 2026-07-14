@@ -1,8 +1,10 @@
 import React from 'react';
 import { Textarea, Button } from '@heroui/react';
 import { Sparkles, Languages } from 'lucide-react';
+import { useTranslation } from '../../../context/LanguageContext';
 
 const SourceCard = ({ sourceText, detectedLang, onSourceTextChange, onTranslate, isTranslating, isDisabled }) => {
+  const { t } = useTranslation();
   return (
     <div className="w-full lg:h-full min-h-[220px] lg:min-h-0 flex flex-col bg-white/95 dark:bg-slate-900/40 backdrop-blur-3xl rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.06),0_0_40px_rgba(99,102,241,0.15)] dark:shadow-2xl dark:shadow-indigo-500/10 ring-1 ring-white dark:ring-slate-800/50 border-[1.5px] border-indigo-100/60 dark:border-slate-800 overflow-hidden relative group transition-all duration-500 hover:shadow-[0_12px_50px_rgba(0,0,0,0.08),0_0_60px_rgba(99,102,241,0.25)] hover:border-indigo-300 dark:hover:border-slate-700">
 
@@ -12,10 +14,10 @@ const SourceCard = ({ sourceText, detectedLang, onSourceTextChange, onTranslate,
 
       <div className="relative z-10 flex flex-col h-full min-h-0">
         {/* Header */}
-        <div className="px-6 pt-6 pb-2 flex items-center justify-between z-10">
+        <div className="px-6 pt-6 pb-2 flex items-center justify-between flex-wrap gap-2 z-10">
           <div className="flex items-center gap-2 bg-indigo-50 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-slate-700 ring-1 ring-indigo-500/10 dark:ring-slate-700/50 transition-colors px-4 py-2 h-9 rounded-xl border-0">
             <Languages size={15} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
-            <span className="font-bold text-xs text-indigo-700 dark:text-slate-300 uppercase tracking-widest">{detectedLang ? " Translate from " + detectedLang : "Detect Language"}</span>
+            <span className="font-bold text-xs text-indigo-700 dark:text-slate-300 uppercase tracking-widest">{detectedLang ? t('translator.source.translateFrom', { lang: detectedLang }) : t('translator.source.detectLanguage')}</span>
           </div>
 
           <Button
@@ -26,7 +28,7 @@ const SourceCard = ({ sourceText, detectedLang, onSourceTextChange, onTranslate,
             isDisabled={isDisabled}
             startContent={!isTranslating && <Sparkles className="group-hover/btn:rotate-12 transition-transform opacity-90" size={14} />}
           >
-            {isTranslating ? 'Translating' : 'Translate'}
+            {isTranslating ? t('translator.source.translating') : t('translator.source.translate')}
           </Button>
         </div>
 
@@ -34,7 +36,7 @@ const SourceCard = ({ sourceText, detectedLang, onSourceTextChange, onTranslate,
         <div className="flex-1 px-8 pt-4 pb-6 flex flex-col min-h-0 overflow-hidden z-10">
           <Textarea
             variant="light"
-            placeholder="Type what you'd like to translate..."
+            placeholder={t('translator.source.placeholder')}
             classNames={{
               base: "w-full h-full flex-1 min-h-0",
               input: "resize-none text-xl font-medium text-slate-800 dark:text-slate-100 leading-relaxed placeholder:text-slate-300 dark:placeholder:text-slate-600 h-full overflow-y-auto mix-blend-multiply dark:mix-blend-normal",

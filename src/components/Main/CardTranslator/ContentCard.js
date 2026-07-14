@@ -1,6 +1,8 @@
 import React from 'react';
+import { useTranslation } from '../../../context/LanguageContext';
 
 const ContentCard = ({ loading, resultText }) => {
+  const { t } = useTranslation();
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
       {loading ? (
@@ -9,7 +11,7 @@ const ContentCard = ({ loading, resultText }) => {
             <div className="relative">
               <div className="w-10 h-10 border-[3px] border-indigo-100 dark:border-slate-800 border-t-indigo-500 rounded-full animate-spin"></div>
             </div>
-            <span className="text-xs text-slate-400 dark:text-slate-500 font-medium animate-pulse">Translating...</span>
+            <span className="text-xs text-slate-400 dark:text-slate-500 font-medium animate-pulse">{t('translator.content.translating')}</span>
           </div>
         </div>
       ) : (
@@ -20,7 +22,7 @@ const ContentCard = ({ loading, resultText }) => {
             </p>
           ) : (
             <p className="text-xl font-medium text-slate-300/80 dark:text-slate-700/60 leading-relaxed italic">
-              Translation...
+              {t('translator.content.placeholder')}
             </p>
           )}
         </div>

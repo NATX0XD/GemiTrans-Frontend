@@ -2,8 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { useTranslation } from '../../context/LanguageContext';
 
 const CTASection = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     return (
@@ -21,16 +23,16 @@ const CTASection = () => {
                     <div className="absolute bottom-0 left-0 w-48 h-48 md:w-64 md:h-64 bg-violet-400/20 rounded-full blur-[60px] -ml-10 -mb-10 pointer-events-none"></div>
 
                     <h2 className="text-2xl md:text-5xl font-black text-white tracking-tight mb-4 md:mb-6 relative z-10 leading-tight">
-                        Ready to break language barriers?
+                        {t('landing.cta.heading')}
                     </h2>
                     <p className="text-sm md:text-xl text-indigo-100 font-medium max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed relative z-10">
-                        Join thousands of professionals using AI Workbench to communicate seamlessly across languages.
+                        {t('landing.cta.subheading')}
                     </p>
                     <button
                         onClick={() => navigate('/login')}
                         className="w-full md:w-auto group relative px-8 md:px-10 py-3.5 md:py-4 bg-white hover:bg-slate-50 text-indigo-700 rounded-full font-bold text-base md:text-lg shadow-lg transition-all duration-300 active:scale-95 inline-flex items-center justify-center gap-2 z-10 cursor-pointer border-none"
                     >
-                        Get Started Free
+                        {t('landing.cta.button')}
                         <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform md:w-5 md:h-5" />
                     </button>
                 </motion.div>

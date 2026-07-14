@@ -3,12 +3,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 const Context = createContext()
 
 export const DataProvider = ({ children }) => {
-    // Theme state (light/dark)
     const [theme, setTheme] = useState(() => {
         return localStorage.getItem('app-theme') || 'light';
     });
 
-    // Handle theme changes
     useEffect(() => {
         const root = window.document.documentElement;
         if (theme === 'dark') {
@@ -19,7 +17,6 @@ export const DataProvider = ({ children }) => {
         localStorage.setItem('app-theme', theme);
     }, [theme]);
 
-    // Boilerplate for future global state (e.g. Translation History, Favorites)
     const [globalState, setGlobalState] = useState({})
 
     return (

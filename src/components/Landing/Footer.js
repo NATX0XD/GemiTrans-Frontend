@@ -1,7 +1,9 @@
 import React from 'react';
 import { Languages } from 'lucide-react';
+import { useTranslation } from '../../context/LanguageContext';
 
 const Footer = () => {
+    const { t } = useTranslation();
     return (
         <footer className="bg-white border-t border-slate-100 pt-16 pb-10">
             <div className="max-w-7xl mx-auto px-6">
@@ -15,22 +17,22 @@ const Footer = () => {
                             <span className="text-xl font-black text-slate-900 tracking-tight">{process.env.REACT_APP_NAME}</span>
                         </div>
                         <p className="text-slate-500 font-medium leading-relaxed">
-                            Next-generation translation tools designed for professionals. Break language barriers with zero friction.
+                            {t('landing.footer.tagline')}
                         </p>
                     </div>
 
                     {/* Quick Links — Only functional ones */}
                     <div>
-                        <h4 className="font-bold text-slate-900 mb-5 uppercase tracking-widest text-xs">Quick Links</h4>
+                        <h4 className="font-bold text-slate-900 mb-5 uppercase tracking-widest text-xs">{t('landing.footer.quickLinks')}</h4>
                         <ul className="space-y-3">
                             <li>
                                 <a href="#features" className="text-slate-500 hover:text-indigo-600 font-medium transition-colors">
-                                    Features
+                                    {t('landing.footer.features')}
                                 </a>
                             </li>
                             <li>
                                 <a href="#pricing" className="text-slate-500 hover:text-indigo-600 font-medium transition-colors">
-                                    Pricing
+                                    {t('landing.footer.pricing')}
                                 </a>
                             </li>
                         </ul>
@@ -39,10 +41,10 @@ const Footer = () => {
 
                 <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-sm font-medium text-slate-400">
-                        &copy; {new Date().getFullYear()} {process.env.REACT_APP_NAME}. All rights reserved.
+                        &copy; {new Date().getFullYear()} {process.env.REACT_APP_NAME}. {t('landing.footer.rightsReserved')}
                     </p>
                     <div className="text-sm border border-slate-100 rounded-full px-4 py-1.5 text-slate-400 font-medium bg-slate-50">
-                        Powered by <span className="text-emerald-500 font-bold inline-flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>  GEMINI</span>
+                        {t('landing.footer.poweredBy')} <span className="text-emerald-500 font-bold inline-flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>  GEMINI</span>
                     </div>
                 </div>
             </div>

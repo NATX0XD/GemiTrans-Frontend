@@ -1,12 +1,14 @@
 import React from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { navItems } from '../../../configuration/navItems';
+import { useTranslation } from '../../../context/LanguageContext';
 
 
 
 const MenuNavber = ({ isMobile }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   return (
     <div className={`flex gap-1 ${isMobile ? 'flex-col w-full' : 'items-center hidden lg:flex'}`}>
@@ -22,7 +24,7 @@ const MenuNavber = ({ isMobile }) => {
               }`}
           >
             {item.icon}
-            {isMobile ? <span className="ml-3">{item.name}</span> : item.name}
+            {isMobile ? <span className="ml-3">{t(item.labelKey)}</span> : t(item.labelKey)}
           </button>
         )
       })}

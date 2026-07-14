@@ -1,19 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Trash2, AlertTriangle } from 'lucide-react';
+import { useTranslation } from '../../../context/LanguageContext';
 
-const ConfirmModal = ({ 
-  isOpen, 
-  onClose, 
-  onConfirm, 
-  title = "Confirm Deletion", 
-  message = "Are you sure you want to delete this? This action cannot be undone.",
-  confirmText = "Delete",
-  cancelText = "Cancel",
+const ConfirmModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  message,
+  confirmText,
+  cancelText,
   variant = "danger", // 'danger' (red) or 'warning' (amber)
   customIcon: CustomIcon
 }) => {
+  const { t } = useTranslation();
   if (!isOpen) return null;
+
+  // Prop-driven text takes precedence; fall back to translated generic defaults.
+  const resolvedTitle = title ?? t('settings.confirm.title');
+  const resolvedMessage = message ?? t('settings.confirm.message');
+  const resolvedConfirmText = confirmText ?? t('settings.confirm.confirm');
+  const resolvedCancelText = cancelText ?? t('settings.confirm.cancel');
 
   const isDanger = variant === 'danger';
   const Icon = CustomIcon || (isDanger ? Trash2 : AlertTriangle);
@@ -67,10 +75,10 @@ const ConfirmModal = ({
           
           {/* Text Content */}
           <h2 className="text-xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight mb-2.5">
-            {title}
+            {resolvedTitle}
           </h2>
           <p className="text-sm font-medium text-slate-500 dark:text-slate-400 leading-relaxed max-w-[260px] mb-8">
-            {message}
+            {resolvedMessage}
           </p>
 
           {/* Action Buttons */}
@@ -80,7 +88,7 @@ const ConfirmModal = ({
               onClick={onClose}
               className="flex-1 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 font-bold text-sm tracking-wide transition-colors border-0 cursor-pointer outline-none focus:ring-2 focus:ring-slate-200 focus:ring-offset-2 focus:ring-offset-white"
             >
-              {cancelText}
+              {resolvedCancelText}
             </button>
             <button 
               type="button"
@@ -90,7 +98,7 @@ const ConfirmModal = ({
               }}
               className={`flex-1 h-12 rounded-2xl ${themeClasses.btn} text-white font-bold text-sm tracking-wide transition-all border-0 cursor-pointer outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white active:scale-95`}
             >
-              {confirmText}
+              {resolvedConfirmText}
             </button>
           </div>
         </div>

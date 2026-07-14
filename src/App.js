@@ -1,15 +1,15 @@
-// src/App.js
+
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './configuration/firebase';
 
 
-// Import Layouts
+
 import MainLayout from './layout/MainLayout';
 import AuthLayout from './layout/AuthLayout';
 
-// Import Pages
+
 import HomePage from './page/HomePage';
 import HistoryPage from './page/HistoryPage';
 import SavedWordsPage from './page/SavedWordsPage';
@@ -18,6 +18,7 @@ import LoginPage from './page/LoginPage';
 import RegisterPage from './page/RegisterPage';
 import PageNotFound from './page/PageNotFound';
 import { DataProvider } from './context/DataContext';
+import { LanguageProvider } from './context/LanguageContext';
 import LandingPage from './page/LandingPage';
 import PricingPage from './page/PricingPage';
 import Loading from './page/Loading';
@@ -42,10 +43,11 @@ function App() {
 
   return (
     <DataProvider>
+      <LanguageProvider>
       <Router>
         <Routes>
 
-         
+
           <Route path="/" element={!currentUser ? <LandingPage /> : <Navigate to="/app" />} />
 
           <Route element={currentUser ? <Navigate to="/app" /> : <AuthLayout />}>
@@ -66,6 +68,7 @@ function App() {
 
         </Routes>
       </Router>
+      </LanguageProvider>
     </DataProvider>
   );
 }

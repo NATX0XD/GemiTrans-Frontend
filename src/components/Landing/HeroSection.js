@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Languages } from 'lucide-react';
+import { useTranslation } from '../../context/LanguageContext';
 
 const translationPairs = [
     {
@@ -25,6 +26,7 @@ const translationPairs = [
 ];
 
 const HeroSection = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [pairIndex, setPairIndex] = useState(0);
     const [sourceDisplayed, setSourceDisplayed] = useState('');
@@ -90,7 +92,7 @@ const HeroSection = () => {
                 >
                     <div className="flex items-center gap-2">
                         <Languages size={14} className="text-indigo-500" />
-                        <span>Intelligence by</span>
+                        <span>{t('landing.hero.badgeIntelligenceBy')}</span>
                         <div className="flex items-center gap-1.5 ml-0.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></div>
                             <span className="text-indigo-600 font-extrabold tracking-normal">GEMINI</span>
@@ -105,9 +107,9 @@ const HeroSection = () => {
                     transition={{ delay: 0.3, duration: 0.8 }}
                     className="text-4xl sm:text-5xl md:text-7xl font-black text-slate-900 tracking-tight leading-[1.15] md:leading-[1.1] mb-6 md:mb-8"
                 >
-                    Break language barriers <br className="hidden md:block" />
+                    {t('landing.hero.headlineLine1')} <br className="hidden md:block" />
                     <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-500 bg-clip-text text-transparent">
-                        with zero friction.
+                        {t('landing.hero.headlineLine2')}
                     </span>
                 </motion.h1>
 
@@ -118,7 +120,7 @@ const HeroSection = () => {
                     transition={{ delay: 0.4, duration: 0.8 }}
                     className="text-base md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 md:mb-14 leading-relaxed font-medium px-2"
                 >
-                    A premium workspace designed for professionals to seamlessly translate, organize, and reference multi-lingual content in real-time.
+                    {t('landing.hero.subheadline')}
                 </motion.p>
 
                 {/* CTA Buttons */}
@@ -133,7 +135,7 @@ const HeroSection = () => {
                         className="flex-1 sm:flex-none group relative px-4 sm:px-10 py-3.5 md:py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-bold text-[13px] sm:text-base md:text-lg shadow-[0_10px_40px_-10px_rgba(79,70,229,0.7)] hover:shadow-[0_15px_50px_-10px_rgba(79,70,229,0.9)] transition-all duration-300 flex items-center justify-center gap-1.5 active:scale-95 overflow-hidden border-none cursor-pointer"
                     >
                         <span className="relative z-10 flex items-center gap-1.5 whitespace-nowrap">
-                            Join Free <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform sm:w-5 sm:h-5" />
+                            {t('landing.hero.joinFree')} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform sm:w-5 sm:h-5" />
                         </span>
                     </button>
                     
@@ -144,7 +146,7 @@ const HeroSection = () => {
                         }}
                         className="flex-1 sm:flex-none px-4 sm:px-10 py-3.5 md:py-5 bg-white hover:bg-slate-50 text-slate-800 rounded-full font-bold text-[13px] sm:text-base md:text-lg border border-slate-200 shadow-sm transition-all duration-300 active:scale-95 hover:border-slate-300 cursor-pointer whitespace-nowrap"
                     >
-                        Pricing
+                        {t('landing.hero.pricing')}
                     </button>
                 </motion.div>
                 
@@ -170,7 +172,7 @@ const HeroSection = () => {
                                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
                                </div>
                                <div className="mx-auto px-4 md:px-6 py-1.5 md:py-2 bg-slate-100/80 rounded-lg text-[9px] md:text-[11px] font-black text-slate-400 tracking-widest uppercase">
-                                   AI Workspace
+                                   {t('landing.hero.aiWorkspace')}
                                </div>
                            </div>
 
@@ -202,7 +204,7 @@ const HeroSection = () => {
                                            </div>
                                        )}
                                        {phase === 'paused' && targetDisplayed.length > 0 && (
-                                           <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">✓ Refined</span>
+                                           <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">✓ {t('landing.hero.refined')}</span>
                                        )}
                                    </div>
                                    <div className="text-indigo-900 text-base md:text-lg font-bold leading-relaxed flex-1 min-h-[44px] md:min-h-[48px]">
@@ -218,7 +220,7 @@ const HeroSection = () => {
                                                    <span className="inline-block w-[2.5px] h-5 bg-indigo-500 ml-0.5 animate-pulse align-middle"></span>
                                                )}
                                                {phase === 'typing-source' && targetDisplayed.length === 0 && (
-                                                   <span className="text-indigo-300 text-sm md:text-base italic font-medium">Translating...</span>
+                                                   <span className="text-indigo-300 text-sm md:text-base italic font-medium">{t('landing.hero.translating')}</span>
                                                )}
                                            </>
                                        )}

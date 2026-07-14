@@ -6,6 +6,7 @@ import { auth } from '../../../../configuration/firebase';
 import { getUserSettings, saveUserSettings } from '../../../../services/settingsService';
 import { clearSpeechSettingsCache } from '../../../../services/speechService';
 import { useData } from '../../../../context/DataContext';
+import { useTranslation } from '../../../../context/LanguageContext';
 import ConfirmModal from '../ConfirmModal';
 
 // Sub-components
@@ -14,6 +15,7 @@ import VoiceSettings from './VoiceSettings';
 import AppearanceSettings from './AppearanceSettings';
 
 const SettingsModal = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('languages');
@@ -128,9 +130,9 @@ const SettingsModal = ({ isOpen, onClose }) => {
   };
 
   const tabs = [
-    { id: 'languages', label: 'Languages', icon: <Globe size={18} /> },
-    { id: 'voice', label: 'Voice & Audio', icon: <Volume2 size={18} /> },
-    { id: 'appearance', label: 'Appearance', icon: <Sun size={18} /> },
+    { id: 'languages', label: t('settings.tabs.languages'), icon: <Globe size={18} /> },
+    { id: 'voice', label: t('settings.tabs.voice'), icon: <Volume2 size={18} /> },
+    { id: 'appearance', label: t('settings.tabs.appearance'), icon: <Sun size={18} /> },
   ];
 
   const modalContent = (
@@ -140,26 +142,26 @@ const SettingsModal = ({ isOpen, onClose }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-4xl bg-white/90 dark:bg-slate-900 backdrop-blur-xl rounded-[2.5rem] shadow-[0_30px_60px_-12px_rgba(0,0,0,0.3)] dark:shadow-[0_30px_60px_-12px_rgba(0,0,0,0.6)] border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row overflow-hidden animate-in zoom-in-95 fade-in duration-300 h-[600px] max-h-[90vh]"
+        className="relative w-[95vw] max-w-4xl bg-white/90 dark:bg-slate-900 backdrop-blur-xl rounded-[2.5rem] shadow-[0_30px_60px_-12px_rgba(0,0,0,0.3)] dark:shadow-[0_30px_60px_-12px_rgba(0,0,0,0.6)] border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row overflow-hidden animate-in zoom-in-95 fade-in duration-300 h-[90vh] md:h-[600px] max-h-[90vh]"
       >
         {/* Sidebar */}
-        <div className="w-full md:w-64 bg-slate-50/50 dark:bg-slate-950/50 border-b md:border-b-0 md:border-r border-slate-100/50 dark:border-slate-800 flex flex-col pt-8">
-          <div className="px-6 pb-6">
+        <div className="w-full md:w-64 bg-slate-50/50 dark:bg-slate-950/50 border-b md:border-b-0 md:border-r border-slate-100/50 dark:border-slate-800 flex flex-col pt-6 md:pt-8 shrink-0">
+          <div className="px-6 pb-4 md:pb-6 pr-16 md:pr-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 shadow-sm border border-indigo-100/20 dark:border-indigo-500/20">
                 <SlidersHorizontal size={16} />
               </div>
-              <h2 className="text-lg font-black text-slate-800 dark:text-slate-100 tracking-tight">Settings</h2>
+              <h2 className="text-lg font-black text-slate-800 dark:text-slate-100 tracking-tight">{t('settings.title')}</h2>
             </div>
-            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-1">Personalize your app</p>
+            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-1">{t('settings.subtitle')}</p>
           </div>
 
-          <nav className="flex-1 px-4 space-y-1">
+          <nav className="flex-1 px-4 flex flex-row md:flex-col gap-1 md:gap-0 md:space-y-1 overflow-x-auto md:overflow-visible pb-2 md:pb-0 custom-scrollbar">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all border-none cursor-pointer outline-none text-sm font-bold ${activeTab === tab.id
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all border-none cursor-pointer outline-none text-sm font-bold shrink-0 whitespace-nowrap ${activeTab === tab.id
                     ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-100 dark:border-slate-700/50 ring-1 ring-slate-200/50 dark:ring-slate-700/50'
                     : 'bg-transparent text-slate-500 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 hover:text-slate-700 dark:hover:text-slate-300 text-slate-400/80 dark:text-slate-500'
                   }`}
@@ -177,7 +179,9 @@ const SettingsModal = ({ isOpen, onClose }) => {
         <button
           onClick={handleCloseAttempt}
           disabled={saving}
-          className="absolute top-6 right-8 w-10 h-10 rounded-2xl bg-white/50 dark:bg-slate-800 hover:bg-slate-100/80 dark:hover:bg-slate-700 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 flex items-center justify-center transition-all border border-slate-200/50 dark:border-slate-700 cursor-pointer outline-none active:scale-90 disabled:opacity-50 z-50 shadow-sm"
+          aria-label={t('settings.close')}
+          title={t('settings.close')}
+          className="absolute top-4 md:top-6 right-4 md:right-8 w-10 h-10 rounded-2xl bg-white/50 dark:bg-slate-800 hover:bg-slate-100/80 dark:hover:bg-slate-700 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 flex items-center justify-center transition-all border border-slate-200/50 dark:border-slate-700 cursor-pointer outline-none active:scale-90 disabled:opacity-50 z-50 shadow-sm"
         >
           <X size={20} />
         </button>
@@ -188,11 +192,9 @@ const SettingsModal = ({ isOpen, onClose }) => {
           {/* Header (Section Specific) */}
           <div className="px-8 pt-10 pb-4 flex items-center justify-between">
             <div className="max-w-[70%]">
-              <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 capitalize tracking-tight">{activeTab === 'voice' ? 'Voice & Audio' : activeTab}</h3>
+              <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 capitalize tracking-tight">{t(`settings.tabs.${activeTab}`)}</h3>
               <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
-                {activeTab === 'languages' && "Quick-access translation menu preferences."}
-                {activeTab === 'voice' && "Control how the AI speaks your translations."}
-                {activeTab === 'appearance' && "Customize the look and feel of the application."}
+                {t(`settings.descriptions.${activeTab}`)}
               </p>
             </div>
           </div>
@@ -238,7 +240,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
                   <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-white">
                     <Check size={12} strokeWidth={3} />
                   </div>
-                  <span className="text-xs font-bold">Successfully Saved</span>
+                  <span className="text-xs font-bold">{t('settings.savedSuccess')}</span>
                 </div>
               )}
             </div>
@@ -250,7 +252,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
               startContent={!saving && <Save size={18} />}
               className="h-10 px-8 rounded-2xl font-black shadow-xl shadow-indigo-500/25 dark:shadow-indigo-900/40 active:scale-95 transition-all bg-indigo-600 hover:bg-indigo-500"
             >
-              {saving ? 'Syncing...' : 'Apply'}
+              {saving ? t('settings.syncing') : t('settings.apply')}
             </Button>
           </div>
         </div>
@@ -261,10 +263,10 @@ const SettingsModal = ({ isOpen, onClose }) => {
         isOpen={showConfirmDiscard}
         onClose={() => setShowConfirmDiscard(false)}
         onConfirm={onClose}
-        title="Discard Changes?"
-        message="You have unsaved changes. If you leave now, your adjustments will be lost and the app will not update."
-        confirmText="Discard Anyway"
-        cancelText="Stay Here"
+        title={t('settings.discard.title')}
+        message={t('settings.discard.message')}
+        confirmText={t('settings.discard.confirm')}
+        cancelText={t('settings.discard.cancel')}
         variant="warning"
         customIcon={AlertTriangle}
       />

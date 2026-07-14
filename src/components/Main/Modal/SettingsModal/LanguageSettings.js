@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Globe, Search, X, Check, Sun } from 'lucide-react';
 import { availableLanguages } from '../../../../configuration/availableLanguages';
+import { useTranslation } from '../../../../context/LanguageContext';
 
 const LanguageSettings = ({ defaultLanguages, toggleLanguage, removeLanguage }) => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredLanguages = availableLanguages
@@ -18,7 +20,7 @@ const LanguageSettings = ({ defaultLanguages, toggleLanguage, removeLanguage }) 
             <X size={14} className="cursor-pointer text-indigo-300 dark:text-indigo-400 group-hover:text-red-500 transition-colors" onClick={() => removeLanguage(lang)} />
           </span>
         ))}
-        {defaultLanguages.length === 0 && <p className="text-[11px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider py-1 pl-1">No defaults selected (Max 3)</p>}
+        {defaultLanguages.length === 0 && <p className="text-[11px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider py-1 pl-1">{t('settings.languages.noDefaults')}</p>}
       </div>
 
       {/* Search bar for list */}
@@ -26,7 +28,7 @@ const LanguageSettings = ({ defaultLanguages, toggleLanguage, removeLanguage }) 
         <Search size={16} className="absolute left-4 text-slate-400 dark:text-slate-600 pointer-events-none" />
         <input 
           type="text"
-          placeholder="Search to filter languages..."
+          placeholder={t('settings.languages.searchPlaceholder')}
           className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl pl-11 pr-4 py-3 text-sm outline-none focus:border-indigo-400 focus:bg-white dark:focus:bg-slate-800 transition-all shadow-none font-bold placeholder:text-slate-400/70 dark:text-slate-100 dark:placeholder:text-slate-600"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -58,7 +60,7 @@ const LanguageSettings = ({ defaultLanguages, toggleLanguage, removeLanguage }) 
           ) : (
             <div className="p-8 text-center text-sm text-slate-500 flex flex-col items-center gap-2">
               <Globe size={24} className="text-slate-200 dark:text-slate-700" />
-              <p className="font-bold text-xs uppercase tracking-tight dark:text-slate-500">No languages match your search</p>
+              <p className="font-bold text-xs uppercase tracking-tight dark:text-slate-500">{t('settings.languages.noMatch')}</p>
             </div>
           )}
         </div>
@@ -66,7 +68,7 @@ const LanguageSettings = ({ defaultLanguages, toggleLanguage, removeLanguage }) 
 
       {defaultLanguages.length >= 3 && (
         <div className="flex justify-center">
-           <p className="text-[10px] text-amber-600 dark:text-amber-400 font-black uppercase tracking-widest flex items-center gap-1.5 bg-amber-50 dark:bg-amber-900/20 px-4 py-2 rounded-xl border border-amber-100 dark:border-amber-800/50 animate-pulse"><Sun size={12} className="text-amber-500 dark:text-amber-400"/> Select limit reached (3/3)</p>
+           <p className="text-[10px] text-amber-600 dark:text-amber-400 font-black uppercase tracking-widest flex items-center gap-1.5 bg-amber-50 dark:bg-amber-900/20 px-4 py-2 rounded-xl border border-amber-100 dark:border-amber-800/50 animate-pulse"><Sun size={12} className="text-amber-500 dark:text-amber-400"/> {t('settings.languages.limitReached')}</p>
         </div>
       )}
     </section>

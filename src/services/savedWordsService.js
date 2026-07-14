@@ -3,9 +3,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const MAX_SAVED_WORDS = 200;
 
-/**
- * Saves a word/translation to the user's savedWords array.
- */
+
 export const addSavedWord = async (uid, wordItem) => {
   if (!uid || !wordItem.translatedText) return;
 
@@ -15,7 +13,6 @@ export const addSavedWord = async (uid, wordItem) => {
     const snap = await getDoc(ref);
     let savedWords = snap.exists() ? (snap.data().savedWords || []) : [];
 
-    // Prevent duplicates based on same source + target text
     const exists = savedWords.some(
       w => w.sourceText === wordItem.sourceText && w.translatedText === wordItem.translatedText
     );
@@ -39,9 +36,7 @@ export const addSavedWord = async (uid, wordItem) => {
   }
 };
 
-/**
- * Fetches all saved words for a user.
- */
+
 export const fetchSavedWords = async (uid) => {
   if (!uid) return [];
   const ref = doc(db, 'users', uid, 'data', 'favorites');
@@ -54,9 +49,7 @@ export const fetchSavedWords = async (uid) => {
   }
 };
 
-/**
- * Removes a specific saved word by its ID.
- */
+
 export const removeSavedWord = async (uid, wordId) => {
   if (!uid || !wordId) return;
   const ref = doc(db, 'users', uid, 'data', 'favorites');

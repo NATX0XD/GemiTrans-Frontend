@@ -2,9 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, Sparkles, TrendingUp, ShieldCheck, Languages } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from '../../../context/LanguageContext';
 
 const QuotaExceededModal = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     if (!isOpen) return null;
 
@@ -27,7 +29,7 @@ const QuotaExceededModal = ({ isOpen, onClose }) => {
                             <div className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-3xl flex items-center justify-center shadow-2xl border border-white/30 mb-4 transform -rotate-6 duration-1000">
                                 <Languages size={40} className="text-white fill-white/20" />
                             </div>
-                            <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-md">Quota Limit Reached</h2>
+                            <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-md">{t('translator.quotaModal.title')}</h2>
                         </div>
 
                         <button
@@ -41,14 +43,14 @@ const QuotaExceededModal = ({ isOpen, onClose }) => {
                     {/* Content Section */}
                     <div className="p-8 sm:p-10">
                         <p className="text-slate-600 dark:text-slate-400 font-bold text-center mb-10 leading-relaxed max-w-sm mx-auto">
-                            You've hit your daily limit of <span className="text-indigo-600 dark:text-indigo-400">10,000 tokens</span>.
-                            Unlock unlimited translations and premium AI models today.
+                            {t('translator.quotaModal.bodyBefore')} <span className="text-indigo-600 dark:text-indigo-400">{t('translator.quotaModal.tokens')}</span>.{' '}
+                            {t('translator.quotaModal.bodyAfter')}
                         </p>
 
                         <div className="space-y-4 mb-10">
-                            <FeatureItem icon={<TrendingUp size={16} />} text="1,000,000+ Monthly Tokens" />
-                            <FeatureItem icon={<Sparkles size={16} />} text="Custom Translation Objectives" />
-                            <FeatureItem icon={<ShieldCheck size={16} />} text="Priority API Access" />
+                            <FeatureItem icon={<TrendingUp size={16} />} text={t('translator.quotaModal.feature1')} />
+                            <FeatureItem icon={<Sparkles size={16} />} text={t('translator.quotaModal.feature2')} />
+                            <FeatureItem icon={<ShieldCheck size={16} />} text={t('translator.quotaModal.feature3')} />
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -56,7 +58,7 @@ const QuotaExceededModal = ({ isOpen, onClose }) => {
                                 onClick={onClose}
                                 className="px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-black tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer outline-none text-sm"
                             >
-                                Not Now
+                                {t('translator.quotaModal.notNow')}
                             </button>
                             <button
                                 onClick={() => {
@@ -66,7 +68,7 @@ const QuotaExceededModal = ({ isOpen, onClose }) => {
                                 className="px-6 py-4 rounded-2xl bg-indigo-600 text-white font-black tracking-tight hover:bg-indigo-700 shadow-xl shadow-indigo-600/20 hover:shadow-indigo-600/30 transition-all cursor-pointer outline-none border-0 text-sm flex items-center justify-center gap-2 group"
                             >
                                 <Sparkles size={18} className="animate-pulse" />
-                                Upgrade Plan
+                                {t('translator.quotaModal.upgrade')}
                             </button>
                         </div>
                     </div>

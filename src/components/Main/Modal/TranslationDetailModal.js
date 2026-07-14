@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom';
 import { X, Copy, Check, ArrowRight, Quote, History, Bookmark, Volume2 } from 'lucide-react';
 import { speakText } from '../../../services/speechService';
 import { useData } from '../../../context/DataContext';
+import { useTranslation } from '../../../context/LanguageContext';
 
 const TranslationDetailModal = ({ isOpen, onClose, item, onCopy, copiedId, variant = 'history' }) => {
   const { theme } = useData();
+  const { t } = useTranslation();
   if (!isOpen || !item) return null;
 
   const handleBackdropClick = (e) => {
@@ -26,7 +28,7 @@ const TranslationDetailModal = ({ isOpen, onClose, item, onCopy, copiedId, varia
         border: isDark ? 'border-indigo-500/20' : 'border-indigo-600/10',
         btn: isDark ? 'bg-indigo-600/80 hover:bg-indigo-500 shadow-indigo-500/10' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/25',
         icon: isHistory ? <History size={18} /> : <Bookmark size={18} />,
-        label: isHistory ? 'History Record' : 'Saved Word'
+        label: isHistory ? t('translator.detail.historyRecord') : t('translator.detail.savedWord')
       }
     : {
         bg: isDark ? 'from-slate-950/50' : 'from-amber-50/50',
@@ -36,7 +38,7 @@ const TranslationDetailModal = ({ isOpen, onClose, item, onCopy, copiedId, varia
         border: isDark ? 'border-amber-500/20' : 'border-amber-600/10',
         btn: isDark ? 'bg-amber-600/80 hover:bg-amber-500 shadow-amber-500/10' : 'bg-amber-600 hover:bg-amber-700 shadow-amber-500/25',
         icon: <Bookmark size={18} />,
-        label: 'Saved Word'
+        label: t('translator.detail.savedWord')
       };
 
   const modalContent = (
@@ -61,20 +63,20 @@ const TranslationDetailModal = ({ isOpen, onClose, item, onCopy, copiedId, varia
                </div>
                
                <div className={`hidden md:flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-4 py-2 ${themeClass.bgAccent} ${themeClass.text} rounded-xl border ${themeClass.border} shadow-sm`}>
-                  <span>{item.sourceLang || 'Auto'}</span>
+                  <span>{item.sourceLang || t('translator.detail.auto')}</span>
                   <ArrowRight size={10} className={themeClass.textMute} />
                   <span>{item.targetLang}</span>
                </div>
             </div>
             <div className="flex items-center gap-2">
                {/* Translated Result Label */}
-               <span className={`hidden sm:inline-block text-[10px] font-black ${themeClass.textMute} uppercase tracking-[0.2em] mr-2`}>Translated Result</span>
+               <span className={`hidden sm:inline-block text-[10px] font-black ${themeClass.textMute} uppercase tracking-[0.2em] mr-2`}>{t('translator.detail.translatedResult')}</span>
 
                {/* Moved Actions */}
                <button 
                   onClick={() => speakText(item.translatedText, item.targetLang)}
                   className={`w-10 h-10 rounded-2xl ${themeClass.btn} text-white flex items-center justify-center transition-all border-none cursor-pointer shadow-sm active:scale-90`}
-                  title="Listen"
+                  title={t('translator.detail.listen')}
                >
                   <Volume2 size={18} />
                </button>
@@ -86,12 +88,12 @@ const TranslationDetailModal = ({ isOpen, onClose, item, onCopy, copiedId, varia
                   {copiedId === item.id ? (
                     <>
                       <Check size={16} />
-                      <span className="text-xs font-bold">Copied</span>
+                      <span className="text-xs font-bold">{t('translator.detail.copied')}</span>
                     </>
                   ) : (
                     <>
                       <Copy size={16} />
-                      <span className="text-xs font-bold tracking-wide">Copy</span>
+                      <span className="text-xs font-bold tracking-wide">{t('translator.detail.copy')}</span>
                     </>
                   )}
                </button>
@@ -112,7 +114,7 @@ const TranslationDetailModal = ({ isOpen, onClose, item, onCopy, copiedId, varia
             <div className="flex-1 overflow-y-auto px-6 md:px-10 pt-0 pb-5 custom-scrollbar relative group/src transition-colors">
               <div className="sticky top-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md py-1 mb-2 z-10 flex items-center gap-2">
                 <Quote size={12} className="text-slate-300 dark:text-slate-600" />
-                <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">Original Text</span>
+                <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">{t('translator.detail.originalText')}</span>
               </div>
               <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-wrap font-medium select-all">
                 {item.sourceText}
@@ -132,11 +134,11 @@ const TranslationDetailModal = ({ isOpen, onClose, item, onCopy, copiedId, varia
               {/* Minimal Info Footer */}
               <div className="mt-8 pt-4 flex items-center gap-4 opacity-40">
                   <div className="flex items-center gap-1">
-                      <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Tone:</span>
+                      <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">{t('translator.detail.tone')}</span>
                       <span className="text-[9px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-400">{item.objective}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                      <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Formality:</span>
+                      <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">{t('translator.detail.formality')}</span>
                       <span className="text-[9px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-400">{item.formality}%</span>
                   </div>
               </div>

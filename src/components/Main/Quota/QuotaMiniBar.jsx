@@ -2,8 +2,10 @@ import React from 'react';
 import { Zap, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import useQuota from '../../../hooks/useQuota';
+import { useTranslation } from '../../../context/LanguageContext';
 
 const QuotaMiniBar = () => {
+    const { t } = useTranslation();
     const { used, limit, percentage, isNearLimit, isOverLimit, loading, uid } = useQuota();
 
     if (loading || !uid) return null;
@@ -21,31 +23,31 @@ const QuotaMiniBar = () => {
                         <Zap size={14} className="text-indigo-500" />
                     )}
                     <span className="text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-tight">
-                        Daily Quota
+                        {t('translator.quotaMini.dailyQuota')}
                     </span>
                 </div>
                 <span className={`text-[10px] font-bold ${textColor}`}>
                     {used.toLocaleString()} / {limit.toLocaleString()}
                 </span>
             </div>
-            
+
             <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden relative">
-                <motion.div 
+                <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${percentage}%` }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className={`h-full ${barColor} transition-colors duration-500 shadow-[0_0_8px_rgba(99,102,241,0.2)]`}
                 />
             </div>
-            
+
             {isNearLimit && !isOverLimit && (
                 <p className="text-[9px] font-bold text-amber-600 dark:text-amber-400 mt-2 flex items-center gap-1 animate-pulse">
-                   ⚠️ Running low on tokens
+                    {t('translator.quotaMini.runningLow')}
                 </p>
             )}
             {isOverLimit && (
                 <p className="text-[9px] font-bold text-red-600 dark:text-red-400 mt-2 flex items-center gap-1">
-                   ❌ Limit reached. Please upgrade.
+                    {t('translator.quotaMini.limitReached')}
                 </p>
             )}
         </div>

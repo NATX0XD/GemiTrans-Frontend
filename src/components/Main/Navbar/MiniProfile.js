@@ -1,18 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Settings, Bell, ChevronDown, LogOut, Sparkles } from 'lucide-react';
+import { Settings, ChevronDown, LogOut, Sparkles } from 'lucide-react';
 import { auth } from '../../../configuration/firebase';
 import { signOut } from 'firebase/auth';
 import SettingsModal from '../Modal/SettingsModal';
 import QuotaMiniBar from '../Quota/QuotaMiniBar';
+import NotificationDropdown from './NotificationDropdown';
+import { useTranslation } from '../../../context/LanguageContext';
 
 const MiniProfile = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { t, lang, setLang } = useTranslation();
 
   const user = auth.currentUser;
-  const displayName = user?.displayName || 'User';
+  const displayName = user?.displayName || t('profile.user');
   const shortName = displayName.split(' ')[0]; // Gets only the first name
   const email = user?.email || '';
   const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=6366f1&color=fff&bold=true&size=150`;
@@ -49,11 +52,7 @@ const MiniProfile = () => {
           >
             <Settings className="w-[18px] h-[18px]" strokeWidth={2} />
           </button>
-          <button className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-0 outline-none cursor-pointer bg-transparent">
-            <Bell className="w-[18px] h-[18px]" strokeWidth={2} />
-            {/* Notification Dot */}
-            {/* <span className="absolute top-[8px] right-[10px] w=[6px] h-[6px] p-[3px] bg-emerald-500 rounded-full border-[1.5px] border-white dark:border-slate-900"></span> */}
-          </button>
+          <NotificationDropdown />
         </div>
 
         {/* User Dropdown Section */}
@@ -84,6 +83,22 @@ const MiniProfile = () => {
               {/* Token Quota Display */}
               <QuotaMiniBar />
 
+              {/* Language Switch */}
+              <div className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl mb-1">
+                <span className="text-sm font-bold text-slate-600 dark:text-slate-300">{t('profile.language')}</span>
+                <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-full p-0.5">
+                  {['en', 'th'].map((code) => (
+                    <button
+                      key={code}
+                      onClick={() => setLang(code)}
+                      className={`px-3 py-1 rounded-full text-xs font-black uppercase transition-colors cursor-pointer border-0 outline-none ${lang === code ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'bg-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'}`}
+                    >
+                      {code === 'en' ? 'EN' : 'ไทย'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Upgrade Plan */}
               <Link 
                 to="/pricing"
@@ -91,7 +106,7 @@ const MiniProfile = () => {
                 className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-colors cursor-pointer outline-none border-0 text-sm font-bold no-underline group mb-1"
               >
                 <Sparkles size={16} className="group-hover:rotate-12 transition-transform" />
-                Upgrade Plan
+                {t('profile.upgradePlan')}
               </Link>
 
               {/* Logout */}
@@ -100,7 +115,7 @@ const MiniProfile = () => {
                 className="flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 transition-colors cursor-pointer outline-none border-0 text-sm font-semibold mt-1 bg-transparent"
               >
                 <LogOut size={16} />
-                Sign out
+                {t('profile.signOut')}
               </button>
             </div>
           )}

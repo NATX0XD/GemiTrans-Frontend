@@ -4,8 +4,10 @@ import LanguageSelectorModal from '../components/Main/CardTranslator/LanguageSel
 import NoteEditorModal from '../components/Notebook/NoteEditorModal'
 import NoteSelectionModal from '../components/Notebook/NoteSelectionModal'
 import { PenLine } from 'lucide-react'
+import { useTranslation } from '../context/LanguageContext'
 
 const HomePage = () => {
+  const { t } = useTranslation();
   const [langModalOpen, setLangModalOpen] = useState(false);
   const [langModalCardId, setLangModalCardId] = useState(null);
   const [langModalCurrentLang, setLangModalCurrentLang] = useState(null);
@@ -47,7 +49,7 @@ const HomePage = () => {
   const generateTranslationHTML = (src, trans) => {
     if (!src && (!trans || trans.length === 0)) return '<p></p>';
     let html = '';
-    if (src) html += `<p><strong>Original:</strong> ${src}</p>`;
+    if (src) html += `<p><strong>${t('translator.home.original')}</strong> ${src}</p>`;
     if (trans && trans.length > 0) {
       trans.forEach(t => {
         html += `<p><strong>${t.lang}:</strong> ${t.text}</p>`;
@@ -100,7 +102,7 @@ const HomePage = () => {
       <button
         onClick={handleNoteButtonClick}
         className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-teal-500 to-emerald-500 shadow-xl shadow-teal-500/30 hover:shadow-2xl hover:shadow-teal-500/40 hover:scale-110 active:scale-95 transition-all flex items-center justify-center text-white border-none cursor-pointer outline-none group"
-        title="Add to Notebook"
+        title={t('translator.home.addToNotebook')}
       >
         <PenLine size={22} className="group-hover:rotate-[-8deg] transition-transform" />
       </button>

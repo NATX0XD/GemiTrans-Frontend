@@ -1,7 +1,9 @@
 import React from 'react'
 import { motion } from 'framer-motion';
 import { Languages, Sparkles } from 'lucide-react';
+import { useTranslation } from '../context/LanguageContext';
 const Loading = () => {
+    const { t } = useTranslation();
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8fafc] dark:bg-slate-950 transition-colors duration-700 overflow-hidden relative">
             {/* Animated Background Gradients */}
@@ -92,7 +94,7 @@ const Loading = () => {
                             ))}
                         </div>
                         <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">
-                            Synchronizing Workspace
+                            {t('auth.synchronizing')}
                         </span>
                     </motion.div>
                 </div>

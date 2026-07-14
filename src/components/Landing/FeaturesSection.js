@@ -1,31 +1,33 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Zap, BookMarked, History, ShieldCheck } from 'lucide-react';
+import { useTranslation } from '../../context/LanguageContext';
 
 const FeaturesSection = () => {
+    const { t } = useTranslation();
     const features = [
         {
             icon: <Zap className="text-amber-500" size={24} />,
-            title: "Lightning Fast Translation",
-            description: "Powered by advanced AI models, get real-time translations across dozens of languages with native-like accuracy.",
+            title: t('landing.features.feature1Title'),
+            description: t('landing.features.feature1Desc'),
             bg: "bg-amber-50"
         },
         {
             icon: <BookMarked className="text-emerald-500" size={24} />,
-            title: "Smart Smartbook",
-            description: "Save important words and full translations to your personal notebook. Organize by custom tags and access them instantly.",
+            title: t('landing.features.feature2Title'),
+            description: t('landing.features.feature2Desc'),
             bg: "bg-emerald-50"
         },
         {
             icon: <History className="text-indigo-500" size={24} />,
-            title: "Contextual History",
-            description: "Never lose a translation. Your entire workflow is automatically saved with contextual metadata for easy retrieval.",
+            title: t('landing.features.feature3Title'),
+            description: t('landing.features.feature3Desc'),
             bg: "bg-indigo-50"
         },
         {
             icon: <ShieldCheck className="text-rose-500" size={24} />,
-            title: "Privacy First Workspace",
-            description: "Your data is encrypted and secure. We focus on providing a private, secure environment for your intellectual property.",
+            title: t('landing.features.feature4Title'),
+            description: t('landing.features.feature4Desc'),
             bg: "bg-rose-50"
         }
     ];
@@ -35,11 +37,11 @@ const FeaturesSection = () => {
             <div className="max-w-7xl mx-auto px-6">
                 
                 <div className="text-center max-w-3xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700 w-full">
-                    <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-6">
-                        Everything you need to work <span className="text-indigo-600">globally.</span>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-6">
+                        {t('landing.features.headingBefore')} <span className="text-indigo-600">{t('landing.features.headingHighlight')}</span>
                     </h2>
-                    <p className="text-xl text-slate-600 font-medium leading-relaxed">
-                        A suite of powerful tools designed specifically to optimize your multilingual workflow.
+                    <p className="text-lg md:text-xl text-slate-600 font-medium leading-relaxed">
+                        {t('landing.features.subheading')}
                     </p>
                 </div>
 

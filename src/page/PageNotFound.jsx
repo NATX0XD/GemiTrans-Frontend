@@ -3,8 +3,10 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Home, ArrowLeft, Search, Globe, Ghost } from 'lucide-react';
 import { Button } from '@heroui/react';
+import { useTranslation } from '../context/LanguageContext';
 
 const PageNotFound = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     return (
@@ -73,10 +75,10 @@ const PageNotFound = () => {
                 >
                     <div className="space-y-2">
                         <h2 className="text-3xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight">
-                            Lost in Translation?
+                            {t('auth.lostInTranslation')}
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 text-lg font-medium max-w-md mx-auto leading-relaxed">
-                            The page you are looking for doesn't exist or has been moved to another dimension.
+                            {t('auth.notFoundDescription')}
                         </p>
                     </div>
 
@@ -88,7 +90,7 @@ const PageNotFound = () => {
                             className="h-14 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20 active:scale-[0.98] transition-all flex items-center gap-2 group border-none cursor-pointer"
                         >
                             <Home size={20} />
-                            Back to Home
+                            {t('auth.backToHome')}
                         </Button>
                         <Button
                             size="lg"
@@ -97,7 +99,7 @@ const PageNotFound = () => {
                             className="h-14 px-8 bg-slate-200/50 dark:bg-slate-900 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-800 font-bold rounded-2xl active:scale-[0.98] transition-all flex items-center gap-2 border-none cursor-pointer"
                         >
                             <ArrowLeft size={20} />
-                            Go Back
+                            {t('auth.goBack')}
                         </Button>
                     </div>
                 </motion.div>

@@ -4,6 +4,7 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth, db } from '../configuration/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { Eye, EyeOff, User, Mail, Lock, Globe, Calendar as CalendarIcon, ChevronDown, ArrowRight, ArrowLeft, ShieldCheck, Zap, Users, Languages } from "lucide-react";
+import { useTranslation } from '../context/LanguageContext';
 
 const appName = process.env.REACT_APP_NAME || 'AI Workbench';
 
@@ -43,6 +44,7 @@ const countryOptions = [
 
 // -------------- CUSTOM SELECT COMPONENT --------------
 const CustomSelect = ({ label, icon: Icon, placeholder, value, onChange, options }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const dropdownRef = useRef(null);
@@ -87,7 +89,7 @@ const CustomSelect = ({ label, icon: Icon, placeholder, value, onChange, options
             {options.length > 10 && (
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder={t('auth.searchPlaceholder')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full h-9 px-3 mb-1.5 bg-slate-50 border border-slate-100 rounded-lg text-sm text-slate-700 placeholder:text-slate-400 font-medium outline-none focus:border-indigo-300"
@@ -119,7 +121,7 @@ const CustomSelect = ({ label, icon: Icon, placeholder, value, onChange, options
                 )
               })}
               {filtered.length === 0 && (
-                <p className="text-center text-sm text-slate-400 py-3 font-medium">No results found</p>
+                <p className="text-center text-sm text-slate-400 py-3 font-medium">{t('auth.noResults')}</p>
               )}
             </div>
           </div>
@@ -131,6 +133,7 @@ const CustomSelect = ({ label, icon: Icon, placeholder, value, onChange, options
 // ---------------------------------------------------
 
 const RegisterPage = () => {
+  const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -152,7 +155,7 @@ const RegisterPage = () => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const monthOptions = months.map(m => ({ label: m, value: m }));
+  const monthOptions = months.map(m => ({ label: t(`auth.months.${m}`), value: m }));
   const yearOptions = years.map(y => ({ label: y.toString(), value: y.toString() }));
 
   const handleNext = (e) => { e.preventDefault(); setStep(prev => prev + 1); };
@@ -161,7 +164,7 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match.');
+      setError(t('auth.errorPasswordsMismatch'));
       return;
     }
     setLoading(true);
@@ -178,7 +181,7 @@ const RegisterPage = () => {
       });
       navigate('/');
     } catch (err) {
-      setError(err.message || 'Registration failed.');
+      setError(err.message || t('auth.errorRegistrationFailed'));
       setStep(3);
     } finally {
       setLoading(false);
@@ -205,9 +208,9 @@ const RegisterPage = () => {
   const inputCls = "w-full h-11 pl-10 pr-4 bg-slate-50 border border-slate-200 hover:border-indigo-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/10 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 font-medium transition-all outline-none";
 
   return (
-    <div className="w-full max-w-lg mx-auto">
+    <div className="w-full max-w-lg mx-auto px-4">
       {/* Card Container */}
-      <div className="bg-white rounded-[2rem] border border-slate-200/80 shadow-xl shadow-slate-200/40 p-8 md:p-12 relative overflow-hidden">
+      <div className="bg-white rounded-[2rem] border border-slate-200/80 shadow-xl shadow-slate-200/40 p-6 sm:p-8 md:p-12 relative overflow-hidden">
         {/* Decorative gradient */}
         <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-indigo-100 to-violet-100 rounded-full blur-3xl opacity-60 pointer-events-none"></div>
 
@@ -218,8 +221,8 @@ const RegisterPage = () => {
               <Languages size={25} />
 
             </div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Create Account</h1>
-            <p className="text-slate-500 font-medium text-sm mt-1.5">Join {appName} — it's free</p>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">{t('auth.createAccount')}</h1>
+            <p className="text-slate-500 font-medium text-sm mt-1.5">{t('auth.joinFree', { appName })}</p>
           </div>
 
           <StepperIndicator />
@@ -238,28 +241,28 @@ const RegisterPage = () => {
             {step === 1 && (
               <div className="space-y-5">
                 <div className="space-y-1.5 w-full">
-                  <label className="block text-sm font-semibold text-slate-700 ml-0.5">First Name</label>
+                  <label className="block text-sm font-semibold text-slate-700 ml-0.5">{t('auth.firstName')}</label>
                   <div className="relative">
                     <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                    <input placeholder="John" value={formData.firstName} onChange={(e) => handleChange('firstName', e.target.value)} required className={inputCls} />
+                    <input placeholder={t('auth.firstNamePlaceholder')} value={formData.firstName} onChange={(e) => handleChange('firstName', e.target.value)} required className={inputCls} />
                   </div>
                 </div>
                 <div className="space-y-1.5 w-full">
-                  <label className="block text-sm font-semibold text-slate-700 ml-0.5">Last Name</label>
+                  <label className="block text-sm font-semibold text-slate-700 ml-0.5">{t('auth.lastName')}</label>
                   <div className="relative">
                     <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                    <input placeholder="Doe" value={formData.lastName} onChange={(e) => handleChange('lastName', e.target.value)} required className={inputCls} />
+                    <input placeholder={t('auth.lastNamePlaceholder')} value={formData.lastName} onChange={(e) => handleChange('lastName', e.target.value)} required className={inputCls} />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-sm font-semibold text-slate-700 ml-0.5">Username</label>
+                  <label className="block text-sm font-semibold text-slate-700 ml-0.5">{t('auth.username')}</label>
                   <div className="relative">
                     <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm pointer-events-none">@</span>
-                    <input placeholder="johndoe123" value={formData.username} onChange={(e) => handleChange('username', e.target.value)} required className={inputCls} />
+                    <input placeholder={t('auth.usernamePlaceholder')} value={formData.username} onChange={(e) => handleChange('username', e.target.value)} required className={inputCls} />
                   </div>
                 </div>
                 <button type="submit" className="w-full h-11 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-indigo-600/25 active:scale-[0.98] flex items-center justify-center gap-2 mt-4 border-none cursor-pointer text-sm">
-                  Continue <ArrowRight size={16} />
+                  {t('auth.continueBtn')} <ArrowRight size={16} />
                 </button>
               </div>
             )}
@@ -267,17 +270,17 @@ const RegisterPage = () => {
             {/* STEP 2 */}
             {step === 2 && (
               <div className="space-y-5">
-                <CustomSelect label="Country" placeholder="Select your country" icon={Globe} value={formData.country} onChange={(val) => handleChange('country', val)} options={countryOptions} />
+                <CustomSelect label={t('auth.country')} placeholder={t('auth.countryPlaceholder')} icon={Globe} value={formData.country} onChange={(val) => handleChange('country', val)} options={countryOptions} />
                 <div className="flex gap-3">
-                  <CustomSelect label="Birth Month" placeholder="Month" icon={CalendarIcon} value={formData.birthMonth} onChange={(val) => handleChange('birthMonth', val)} options={monthOptions} />
-                  <CustomSelect label="Birth Year" placeholder="Year" value={formData.birthYear} onChange={(val) => handleChange('birthYear', val)} options={yearOptions} />
+                  <CustomSelect label={t('auth.birthMonth')} placeholder={t('auth.birthMonthPlaceholder')} icon={CalendarIcon} value={formData.birthMonth} onChange={(val) => handleChange('birthMonth', val)} options={monthOptions} />
+                  <CustomSelect label={t('auth.birthYear')} placeholder={t('auth.birthYearPlaceholder')} value={formData.birthYear} onChange={(val) => handleChange('birthYear', val)} options={yearOptions} />
                 </div>
                 <div className="flex gap-3 mt-2">
                   <button type="button" onClick={handleBack} className="w-1/3 h-11 bg-slate-100 text-slate-600 font-semibold rounded-xl hover:bg-slate-200 transition-all border-none cursor-pointer flex items-center justify-center gap-1.5 text-sm">
-                    <ArrowLeft size={15} /> Back
+                    <ArrowLeft size={15} /> {t('auth.back')}
                   </button>
                   <button type="submit" className="w-2/3 h-11 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-indigo-600/25 active:scale-[0.98] flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
-                    Next Step <ArrowRight size={16} />
+                    {t('auth.nextStep')} <ArrowRight size={16} />
                   </button>
                 </div>
               </div>
@@ -287,35 +290,35 @@ const RegisterPage = () => {
             {step === 3 && (
               <div className="space-y-5">
                 <div className="space-y-1.5">
-                  <label className="block text-sm font-semibold text-slate-700 ml-0.5">Email Address</label>
+                  <label className="block text-sm font-semibold text-slate-700 ml-0.5">{t('auth.emailAddress')}</label>
                   <div className="relative">
                     <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                    <input type="email" placeholder="name@example.com" value={formData.email} onChange={(e) => handleChange('email', e.target.value)} required className={inputCls} />
+                    <input type="email" placeholder={t('auth.emailPlaceholder')} value={formData.email} onChange={(e) => handleChange('email', e.target.value)} required className={inputCls} />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-sm font-semibold text-slate-700 ml-0.5">Password</label>
+                  <label className="block text-sm font-semibold text-slate-700 ml-0.5">{t('auth.passwordLabel')}</label>
                   <div className="relative">
                     <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                    <input type={isVisible ? "text" : "password"} placeholder="Create a password" value={formData.password} onChange={(e) => handleChange('password', e.target.value)} required className="w-full h-11 pl-10 pr-12 bg-slate-50 border border-slate-200 hover:border-indigo-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/10 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 font-medium transition-all outline-none" />
+                    <input type={isVisible ? "text" : "password"} placeholder={t('auth.passwordCreatePlaceholder')} value={formData.password} onChange={(e) => handleChange('password', e.target.value)} required className="w-full h-11 pl-10 pr-12 bg-slate-50 border border-slate-200 hover:border-indigo-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/10 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 font-medium transition-all outline-none" />
                     <button className="absolute right-3.5 top-1/2 -translate-y-1/2 focus:outline-none" type="button" onClick={toggleVisibility}>
                       {isVisible ? <EyeOff className="w-4 h-4 text-slate-400 hover:text-slate-600 transition-colors" /> : <Eye className="w-4 h-4 text-slate-400 hover:text-slate-600 transition-colors" />}
                     </button>
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-sm font-semibold text-slate-700 ml-0.5">Confirm Password</label>
+                  <label className="block text-sm font-semibold text-slate-700 ml-0.5">{t('auth.confirmPassword')}</label>
                   <div className="relative">
                     <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                    <input type={isVisible ? "text" : "password"} placeholder="Confirm your password" value={formData.confirmPassword} onChange={(e) => handleChange('confirmPassword', e.target.value)} required className={inputCls} />
+                    <input type={isVisible ? "text" : "password"} placeholder={t('auth.confirmPasswordPlaceholder')} value={formData.confirmPassword} onChange={(e) => handleChange('confirmPassword', e.target.value)} required className={inputCls} />
                   </div>
                 </div>
                 <div className="flex gap-3 mt-2">
                   <button type="button" disabled={loading} onClick={handleBack} className="w-1/3 h-11 bg-slate-100 text-slate-600 font-semibold rounded-xl hover:bg-slate-200 transition-all border-none cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5 text-sm">
-                    <ArrowLeft size={15} /> Back
+                    <ArrowLeft size={15} /> {t('auth.back')}
                   </button>
                   <button type="submit" disabled={loading} className="w-2/3 h-11 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-indigo-600/25 active:scale-[0.98] flex items-center justify-center gap-2 border-none cursor-pointer disabled:opacity-60 text-sm">
-                    {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <>Create Account <ArrowRight size={16} /></>}
+                    {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <>{t('auth.createAccountBtn')} <ArrowRight size={16} /></>}
                   </button>
                 </div>
               </div>
@@ -324,8 +327,8 @@ const RegisterPage = () => {
 
           {/* Footer */}
           <p className="mt-6 text-center text-sm text-slate-500 font-medium">
-            Already have an account?{' '}
-            <Link to="/login" className="text-indigo-600 font-bold hover:text-indigo-700 transition-colors">Sign in</Link>
+            {t('auth.alreadyHaveAccount')}{' '}
+            <Link to="/login" className="text-indigo-600 font-bold hover:text-indigo-700 transition-colors">{t('auth.signInLink')}</Link>
           </p>
         </div>
       </div>
@@ -334,17 +337,17 @@ const RegisterPage = () => {
       <div className="mt-8 flex items-center justify-center gap-6 text-slate-400">
         <div className="flex items-center gap-2">
           <ShieldCheck size={14} className="text-emerald-500" />
-          <span className="text-xs font-semibold">SSL Encrypted</span>
+          <span className="text-xs font-semibold">{t('auth.badgeSslEncrypted')}</span>
         </div>
         <div className="w-1 h-1 rounded-full bg-slate-300"></div>
         <div className="flex items-center gap-2">
           <Zap size={14} className="text-amber-500" />
-          <span className="text-xs font-semibold">Real-time AI</span>
+          <span className="text-xs font-semibold">{t('auth.badgeRealtimeAI')}</span>
         </div>
         <div className="w-1 h-1 rounded-full bg-slate-300"></div>
         <div className="flex items-center gap-2">
           <Users size={14} className="text-indigo-500" />
-          <span className="text-xs font-semibold">Free to Use</span>
+          <span className="text-xs font-semibold">{t('auth.badgeFreeToUse')}</span>
         </div>
       </div>
     </div>

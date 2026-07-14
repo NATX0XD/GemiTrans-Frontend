@@ -1,24 +1,28 @@
 import React from 'react';
-import { 
-  Table, 
-  TableHeader, 
-  TableBody, 
-  TableColumn, 
-  TableRow, 
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
   TableCell
 } from '@heroui/react';
+import { useTranslation } from '../../context/LanguageContext';
 
-const DataTable = ({ 
-  columns = [], 
-  data = [], 
+const DataTable = ({
+  columns = [],
+  data = [],
   renderCell,
-  emptyContent = "No records found",
-  ariaLabel = "Data table"
+  emptyContent,
+  ariaLabel
 }) => {
+  const { t } = useTranslation();
+  const resolvedEmpty = emptyContent ?? t('lists.noRecords');
+  const resolvedAria = ariaLabel ?? t('lists.tableAria');
   return (
     <div className="bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl rounded-[2rem] border border-slate-100 dark:border-slate-800/50 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <Table 
-        aria-label={ariaLabel}
+      <Table
+        aria-label={resolvedAria}
         removeWrapper
         classNames={{
           base: "max-w-full overflow-x-auto custom-scrollbar",
@@ -44,7 +48,7 @@ const DataTable = ({
           items={data} 
           emptyContent={
             <div className="py-20 flex flex-col items-center justify-center opacity-40">
-               <p className="text-lg font-bold">{emptyContent}</p>
+               <p className="text-lg font-bold">{resolvedEmpty}</p>
             </div>
           }
         >

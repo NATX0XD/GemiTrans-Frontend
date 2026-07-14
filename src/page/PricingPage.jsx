@@ -1,56 +1,61 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Check, ArrowLeft, Zap, Star, Crown, ShieldCheck, Sparkles } from 'lucide-react';
+import { useTranslation } from '../context/LanguageContext';
 
 const PricingPage = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const plans = [
         {
-            name: 'Free',
+            name: t('landing.pricingPage.freeName'),
             price: '0',
-            description: 'Perfect for individual explorers.',
+            description: t('landing.pricingPage.freeDesc'),
             features: [
-                '1,000 Tokens / month',
-                'Last 10 history items',
-                'Standard AI models',
-                'Basic Notebook (5 notes)',
-                'Personal usage only'
+                t('landing.pricingPage.freeFeature1'),
+                t('landing.pricingPage.freeFeature2'),
+                t('landing.pricingPage.freeFeature3'),
+                t('landing.pricingPage.freeFeature4'),
+                t('landing.pricingPage.freeFeature5')
             ],
-            cta: 'Current Plan',
+            cta: t('landing.pricingPage.freeCta'),
             current: true,
-            color: 'slate'
+            color: 'slate',
+            icon: 'Free'
         },
         {
-            name: 'Pro',
+            name: t('landing.pricingPage.proName'),
             price: '19',
-            description: 'Best for power users and professionals.',
+            description: t('landing.pricingPage.proDesc'),
             features: [
-                'Unlimited Tokens',
-                'Full Translation History',
-                'Priority AI Models (GPT-4o/Claude)',
-                'Unlimited Notebook & Tags',
-                'Tone & Style Control',
-                'Save up to 1,000 words'
+                t('landing.pricingPage.proFeature1'),
+                t('landing.pricingPage.proFeature2'),
+                t('landing.pricingPage.proFeature3'),
+                t('landing.pricingPage.proFeature4'),
+                t('landing.pricingPage.proFeature5'),
+                t('landing.pricingPage.proFeature6')
             ],
-            cta: 'Upgrade to Pro',
+            cta: t('landing.pricingPage.proCta'),
             popular: true,
-            color: 'indigo'
+            color: 'indigo',
+            icon: 'Pro'
         },
         {
-            name: 'Business',
+            name: t('landing.pricingPage.businessName'),
             price: '49',
-            description: 'Advanced features for teams.',
+            description: t('landing.pricingPage.businessDesc'),
             features: [
-                'Everything in Pro',
-                'Multi-user Collaboration',
-                'API Access (Beta)',
-                'Custom Terminology Base',
-                'Dedicated Support',
-                'Privacy-First Data Isolation'
+                t('landing.pricingPage.businessFeature1'),
+                t('landing.pricingPage.businessFeature2'),
+                t('landing.pricingPage.businessFeature3'),
+                t('landing.pricingPage.businessFeature4'),
+                t('landing.pricingPage.businessFeature5'),
+                t('landing.pricingPage.businessFeature6')
             ],
-            cta: 'Contact Sales',
-            color: 'violet'
+            cta: t('landing.pricingPage.businessCta'),
+            color: 'violet',
+            icon: 'Business'
         }
     ];
 
@@ -71,21 +76,21 @@ const PricingPage = () => {
                         className="mb-8 flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-bold text-sm hover:shadow-md transition-all active:scale-95 group cursor-pointer"
                     >
                         <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                        Back to Workspace
+                        {t('landing.pricingPage.backToWorkspace')}
                     </button>
 
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-widest mb-6">
                         <Sparkles size={12} />
-                        <span>Simple Transparent Pricing</span>
+                        <span>{t('landing.pricingPage.badge')}</span>
                     </div>
-                    
-                    <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight mb-6">
-                        Choose the plan that <br />
-                        <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-400 bg-clip-text text-transparent">fits your workflow.</span>
+
+                    <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight mb-6">
+                        {t('landing.pricingPage.headingLine1')} <br />
+                        <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-400 bg-clip-text text-transparent">{t('landing.pricingPage.headingLine2')}</span>
                     </h1>
-                    
-                    <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl font-medium leading-relaxed">
-                        Unlock the full power of context-aware AI translation and professional organization tools.
+
+                    <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 max-w-2xl font-medium leading-relaxed">
+                        {t('landing.pricingPage.subheading')}
                     </p>
                 </div>
 
@@ -102,7 +107,7 @@ const PricingPage = () => {
                         >
                             {plan.popular && (
                                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
-                                    Most Popular
+                                    {t('landing.pricingPage.mostPopular')}
                                 </div>
                             )}
 
@@ -112,14 +117,14 @@ const PricingPage = () => {
                                     plan.color === 'violet' ? 'bg-violet-50 dark:bg-violet-900/40 text-violet-600' :
                                     'bg-slate-50 dark:bg-slate-800 text-slate-600'
                                 }`}>
-                                    {plan.name === 'Free' && <Zap size={24} />}
-                                    {plan.name === 'Pro' && <Star size={24} />}
-                                    {plan.name === 'Business' && <Crown size={24} />}
+                                    {plan.icon === 'Free' && <Zap size={24} />}
+                                    {plan.icon === 'Pro' && <Star size={24} />}
+                                    {plan.icon === 'Business' && <Crown size={24} />}
                                 </div>
                                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{plan.name}</h3>
                                 <div className="flex items-baseline gap-1 mb-4">
                                     <span className="text-4xl font-black text-slate-900 dark:text-white">${plan.price}</span>
-                                    <span className="text-slate-500 font-bold text-sm">/month</span>
+                                    <span className="text-slate-500 font-bold text-sm">{t('landing.pricingPage.perMonth')}</span>
                                 </div>
                                 <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed">
                                     {plan.description}
@@ -154,23 +159,23 @@ const PricingPage = () => {
 
                 {/* Trust Indicators */}
                 <div className="mt-24 pt-16 border-t border-slate-200 dark:border-slate-800 text-center">
-                    <p className="text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.3em] mb-12">Trusted by Professionals Globally</p>
+                    <p className="text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.3em] mb-12">{t('landing.pricingPage.trustedBy')}</p>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto opacity-50 grayscale hover:grayscale-0 transition-all duration-700">
                         <div className="flex items-center justify-center gap-2">
                             <ShieldCheck size={20} className="text-slate-400" />
-                            <span className="text-sm font-bold text-slate-400">SSL Encrypted</span>
+                            <span className="text-sm font-bold text-slate-400">{t('landing.pricingPage.trustSsl')}</span>
                         </div>
                         <div className="flex items-center justify-center gap-2">
                              <Zap size={20} className="text-slate-400" />
-                            <span className="text-sm font-bold text-slate-400">Local Privacy</span>
+                            <span className="text-sm font-bold text-slate-400">{t('landing.pricingPage.trustPrivacy')}</span>
                         </div>
                         <div className="flex items-center justify-center gap-2">
                              <Crown size={20} className="text-slate-400" />
-                            <span className="text-sm font-bold text-slate-400">Award Winning</span>
+                            <span className="text-sm font-bold text-slate-400">{t('landing.pricingPage.trustAward')}</span>
                         </div>
                         <div className="flex items-center justify-center gap-2">
                              <Star size={20} className="text-slate-400" />
-                            <span className="text-sm font-bold text-slate-400">4.9/5 Rating</span>
+                            <span className="text-sm font-bold text-slate-400">{t('landing.pricingPage.trustRating')}</span>
                         </div>
                     </div>
                 </div>

@@ -3,10 +3,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const MAX_NOTES = 50;
 
-/**
- * Add or update a note in the user's notesList array.
- * If note with same ID exists, it updates. Otherwise, prepends.
- */
+
 export const saveNote = async (uid, noteItem) => {
   if (!uid || !noteItem) return;
   const ref = doc(db, 'users', uid, 'data', 'notes');
@@ -15,13 +12,20 @@ export const saveNote = async (uid, noteItem) => {
     const snap = await getDoc(ref);
     let notesList = snap.exists() ? (snap.data().notesList || []) : [];
 
+    const now = Date.now();
     const existingIndex = notesList.findIndex(n => n.id === noteItem.id);
     if (existingIndex >= 0) {
-      // Update existing note
-      notesList[existingIndex] = { ...notesList[existingIndex], ...noteItem };
+      notesList[existingIndex] = { 
+        ...notesList[existingIndex], 
+        ...noteItem, 
+        updatedAt: now 
+      };
     } else {
-      // New note — prepend
-      notesList.unshift({ ...noteItem, date: Date.now() });
+      notesList.unshift({ 
+        ...noteItem, 
+        createdAt: now, 
+        updatedAt: now 
+      });
       if (notesList.length > MAX_NOTES) {
         notesList = notesList.slice(0, MAX_NOTES);
       }
@@ -35,9 +39,7 @@ export const saveNote = async (uid, noteItem) => {
   }
 };
 
-/**
- * Fetches all notes for a user.
- */
+
 export const fetchNotes = async (uid) => {
   if (!uid) return [];
   const ref = doc(db, 'users', uid, 'data', 'notes');
@@ -50,9 +52,6 @@ export const fetchNotes = async (uid) => {
   }
 };
 
-/**
- * Removes a specific note by its ID.
- */
 export const removeNote = async (uid, noteId) => {
   if (!uid || !noteId) return;
   const ref = doc(db, 'users', uid, 'data', 'notes');

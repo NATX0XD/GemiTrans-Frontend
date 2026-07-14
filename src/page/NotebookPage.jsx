@@ -2,14 +2,16 @@ import React, { useState, useCallback } from 'react';
 import NotebookContainer from '../components/Notebook/NotebookContainer';
 import NoteEditorModal from '../components/Notebook/NoteEditorModal';
 import PageBackground from '../components/Main/Layout/PageBackground';
+import { useTranslation } from '../context/LanguageContext';
 
 const NotebookPage = () => {
+  const { t } = useTranslation();
   const [editingNote, setEditingNote] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleCloseEditor = useCallback(() => {
     setEditingNote(null);
-    // Trigger a re-render of NotebookContainer instead of full page reload
+    
     setRefreshKey(k => k + 1);
   }, []);
 
@@ -21,9 +23,9 @@ const NotebookPage = () => {
           <div className="max-w-7xl mx-auto w-full">
             <NotebookContainer 
               key={refreshKey} 
-              onEditNote={(note) => setEditingNote(note)} 
-              title="Notebook"
-              description="Your personal learning journal. Create notes from translations and build your vocabulary with rich formatting."
+              onEditNote={(note) => setEditingNote(note)}
+              title={t('notebook.pageTitle')}
+              description={t('notebook.pageDescription')}
             />
           </div>
           

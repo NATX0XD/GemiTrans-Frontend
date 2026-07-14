@@ -8,6 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { appendTranslationHistory } from '../../../services/historyService';
 import { getUserSettings } from '../../../services/settingsService';
 import QuotaExceededModal from '../Modal/QuotaExceededModal';
+import { useTranslation } from '../../../context/LanguageContext';
 
 // DND Kit Imports
 import {
@@ -24,6 +25,7 @@ import {
 } from '@dnd-kit/sortable';
 
 const TranslationWorkspace = forwardRef(({ onOpenLanguageModal }, ref) => {
+  const { t } = useTranslation();
   const [sourceText, setSourceText] = useState('');
   const [detectedLang, setDetectedLang] = useState(null);
   const [isTranslating, setIsTranslating] = useState(false);
@@ -162,7 +164,7 @@ const TranslationWorkspace = forwardRef(({ onOpenLanguageModal }, ref) => {
         const match = translationsArray[index];
         return {
           ...card,
-          resultText: match ? match.text : '⚠️ No translation returned for this card.',
+          resultText: match ? match.text : t('translator.workspace.noTranslation'),
           loading: false
         };
       }));
@@ -193,9 +195,9 @@ const TranslationWorkspace = forwardRef(({ onOpenLanguageModal }, ref) => {
         setShowQuotaModal(true);
       }
 
-      const errorMessage = err.status === 429 
-        ? "⚠️ Quota Exceeded (Check Profile)"
-        : "❌ Translation failed. Please try again.";
+      const errorMessage = err.status === 429
+        ? t('translator.workspace.quotaExceeded')
+        : t('translator.workspace.translationFailed');
 
       setTargetCards(cards => cards.map(c => ({
         ...c,
@@ -257,12 +259,12 @@ const TranslationWorkspace = forwardRef(({ onOpenLanguageModal }, ref) => {
               <div className="w-10 h-10 rounded-full bg-indigo-100/60 dark:bg-slate-800 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                 <Plus size={20} />
               </div>
-              <span className="text-sm font-bold tracking-wide text-indigo-500 dark:text-slate-300">Add Another Translation</span>
+              <span className="text-sm font-bold tracking-wide text-indigo-500 dark:text-slate-300">{t('translator.workspace.addAnother')}</span>
               <span className="text-xs font-medium text-indigo-400/80 dark:text-slate-500 mt-1.5 max-w-sm text-center leading-relaxed">
-                Compare different languages, tones, or contexts side-by-side in one click.
+                {t('translator.workspace.addAnotherHint')}
               </span>
               <span className="text-[10px] font-bold uppercase tracking-wider mt-4 px-2 py-1 bg-indigo-100/60 dark:bg-slate-800 text-indigo-500/80 dark:text-slate-400 rounded-md">
-                {targetCards.length} / {MAX_CARDS} Cards Used
+                {t('translator.workspace.cardsUsed', { count: targetCards.length, max: MAX_CARDS })}
               </span>
             </div>
           )}

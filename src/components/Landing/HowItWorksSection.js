@@ -1,30 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Type, Sparkles, FolderOpen } from 'lucide-react';
-
-const steps = [
-    {
-        num: '01',
-        icon: <Type size={24} />,
-        title: 'Type or Paste',
-        description: 'Enter any text in any language. Our AI automatically detects the source language for you.',
-        color: 'indigo',
-    },
-    {
-        num: '02',
-        icon: <Sparkles size={24} />,
-        title: 'AI Translates Instantly',
-        description: 'Advanced AI models process your text in real-time and deliver accurate, context-aware translations.',
-        color: 'violet',
-    },
-    {
-        num: '03',
-        icon: <FolderOpen size={24} />,
-        title: 'Save & Organize',
-        description: 'Bookmark words, save translations to your history, and write notes — your personal language workspace.',
-        color: 'emerald',
-    },
-];
+import { useTranslation } from '../../context/LanguageContext';
 
 const colorMap = {
     indigo: {
@@ -51,6 +28,30 @@ const colorMap = {
 };
 
 const HowItWorksSection = () => {
+    const { t } = useTranslation();
+    const steps = [
+        {
+            num: '01',
+            icon: <Type size={24} />,
+            title: t('landing.howItWorks.step1Title'),
+            description: t('landing.howItWorks.step1Desc'),
+            color: 'indigo',
+        },
+        {
+            num: '02',
+            icon: <Sparkles size={24} />,
+            title: t('landing.howItWorks.step2Title'),
+            description: t('landing.howItWorks.step2Desc'),
+            color: 'violet',
+        },
+        {
+            num: '03',
+            icon: <FolderOpen size={24} />,
+            title: t('landing.howItWorks.step3Title'),
+            description: t('landing.howItWorks.step3Desc'),
+            color: 'emerald',
+        },
+    ];
     return (
         <section id="how-it-works" className="py-24 bg-slate-50 relative z-10 border-t border-slate-100">
             <div className="max-w-7xl mx-auto px-6">
@@ -62,10 +63,10 @@ const HowItWorksSection = () => {
                     className="text-center max-w-3xl mx-auto mb-12 md:mb-20"
                 >
                     <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-4 md:mb-6">
-                        How it <span className="text-indigo-600 font-black">works.</span>
+                        {t('landing.howItWorks.headingBefore')} <span className="text-indigo-600 font-black">{t('landing.howItWorks.headingHighlight')}</span>
                     </h2>
                     <p className="text-lg md:text-xl text-slate-600 font-medium leading-relaxed px-4 md:px-0">
-                        Get started in seconds. No configuration required.
+                        {t('landing.howItWorks.subheading')}
                     </p>
                 </motion.div>
 

@@ -8,8 +8,10 @@ import { Pagination, Button } from '@heroui/react';
 import TranslationDetailModal from '../Main/Modal/TranslationDetailModal';
 import ContentFilter from '../Common/ContentFilter';
 import DataTable from '../Common/DataTable';
+import { useTranslation } from '../../context/LanguageContext';
 
 const HistoryContainer = ({ title, description }) => {
+  const { t } = useTranslation();
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState(null);
@@ -79,8 +81,8 @@ const HistoryContainer = ({ title, description }) => {
     return (
       <div className="w-full py-24 flex flex-col items-center justify-center bg-white/80 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl border border-indigo-100 dark:border-slate-800 shadow-sm transition-colors duration-500">
         <Clock className="text-indigo-200 dark:text-indigo-950/30 mb-5 animate-pulse" size={64} />
-        <h3 className="text-xl font-bold text-indigo-900/70 dark:text-indigo-500/40">No translations yet</h3>
-        <p className="text-slate-500 dark:text-slate-500 text-sm mt-2">Any translations you make will automatically appear here.</p>
+        <h3 className="text-xl font-bold text-indigo-900/70 dark:text-indigo-500/40">{t('history.emptyTitle')}</h3>
+        <p className="text-slate-500 dark:text-slate-500 text-sm mt-2">{t('history.emptyDesc')}</p>
       </div>
     );
   }
@@ -97,11 +99,11 @@ const HistoryContainer = ({ title, description }) => {
 
   // Table Config
   const columns = [
-    { key: "original", label: "Original Text", align: "start" },
-    { key: "translated", label: "Translation", align: "start" },
-    { key: "languages", label: "Languages", align: "start" },
-    { key: "settings", label: "Mode", align: "start" },
-    { key: "actions", label: "Actions", align: "end" }
+    { key: "original", label: t('history.col.original'), align: "start" },
+    { key: "translated", label: t('history.col.translated'), align: "start" },
+    { key: "languages", label: t('history.col.languages'), align: "start" },
+    { key: "settings", label: t('history.col.mode'), align: "start" },
+    { key: "actions", label: t('history.col.actions'), align: "end" }
   ];
 
   const renderCell = (item, columnKey) => {
@@ -161,7 +163,7 @@ const HistoryContainer = ({ title, description }) => {
         sortBy={sortBy}
         setSortBy={setSortBy}
         totalItems={history.length}
-        label="Records"
+        label={t('history.recordsLabel')}
         color="indigo"
       />
 
@@ -181,7 +183,7 @@ const HistoryContainer = ({ title, description }) => {
 
             <div className="flex flex-col border-b border-slate-100 dark:border-slate-800 pb-4 mb-4">
               <span className="text-[10px] font-bold text-indigo-500/60 dark:text-indigo-400/60 uppercase tracking-widest mb-2 flex items-center gap-2">
-                 {item.sourceLang && item.sourceLang !== 'Auto' ? `${item.sourceLang} (Original)` : "Original Text"}
+                 {item.sourceLang && item.sourceLang !== 'Auto' ? t('history.originalWithLang', { lang: item.sourceLang }) : t('history.originalLabel')}
               </span>
               <p className="text-slate-600 dark:text-slate-400 text-xs font-medium leading-relaxed line-clamp-2 select-all">
                 {item.sourceText}
@@ -197,9 +199,9 @@ const HistoryContainer = ({ title, description }) => {
                   </div>
                   <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider ml-1">
                     <SlidersHorizontal size={12} className="text-indigo-400/70 dark:text-indigo-500/50" />
-                    <span>Tone: {item.objective}</span>
+                    <span>{t('history.tone', { value: item.objective })}</span>
                     <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700 mx-1"></span>
-                    <span>Formality: {item.formality}%</span>
+                    <span>{t('history.formality', { value: item.formality })}</span>
                   </div>
                 </div>
                 <button 
@@ -221,7 +223,7 @@ const HistoryContainer = ({ title, description }) => {
           columns={columns}
           data={paginatedHistory}
           renderCell={renderCell}
-          ariaLabel="Translation history table"
+          ariaLabel={t('history.tableAria')}
         />
       )}
 
@@ -244,8 +246,8 @@ const HistoryContainer = ({ title, description }) => {
         isOpen={!!confirmDeleteId}
         onClose={() => setConfirmDeleteId(null)}
         onConfirm={() => handleDelete(confirmDeleteId)}
-        title="Delete Translation Record"
-        message="Are you sure you want to remove this translation from your history?"
+        title={t('history.confirmDeleteTitle')}
+        message={t('history.confirmDeleteMessage')}
       />
 
       <TranslationDetailModal 

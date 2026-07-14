@@ -3,10 +3,12 @@ import ReactDOM from 'react-dom';
 import { Input } from '@heroui/react';
 import { Search, Check, Globe, X } from 'lucide-react';
 import { availableLanguages } from '../../../configuration/availableLanguages';
+import { useTranslation } from '../../../context/LanguageContext';
 
 
 
 const LanguageSelectorModal = ({ isOpen, onClose, activeCardId, currentLang, onSelectLanguage }) => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
 
   if (!isOpen) return null;
@@ -58,7 +60,7 @@ const LanguageSelectorModal = ({ isOpen, onClose, activeCardId, currentLang, onS
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-2">
-          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">Select Language</h2>
+          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">{t('translator.languageModal.title')}</h2>
           <button
             onClick={() => { setSearchTerm(''); onClose(); }}
             className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition-colors border-0 cursor-pointer outline-none"
@@ -71,7 +73,7 @@ const LanguageSelectorModal = ({ isOpen, onClose, activeCardId, currentLang, onS
         <div className="px-6 py-3">
           <Input
             autoFocus
-            placeholder="Search languages..."
+            placeholder={t('translator.languageModal.searchPlaceholder')}
             value={searchTerm}
             onValueChange={setSearchTerm}
             startContent={<Search size={16} className="text-slate-400 dark:text-slate-600" />}
@@ -120,7 +122,7 @@ const LanguageSelectorModal = ({ isOpen, onClose, activeCardId, currentLang, onS
             {filteredLanguages.length === 0 && (
               <div className="flex flex-col items-center justify-center py-10 opacity-50">
                 <Globe size={32} className="mb-3 text-slate-300 dark:text-slate-700" />
-                <span className="text-slate-500 dark:text-slate-600 font-medium text-sm">No languages found</span>
+                <span className="text-slate-500 dark:text-slate-600 font-medium text-sm">{t('translator.languageModal.noResults')}</span>
               </div>
             )}
           </div>

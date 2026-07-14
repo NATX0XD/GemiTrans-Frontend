@@ -1,39 +1,40 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Globe, Zap, Shield, Clock } from 'lucide-react';
-
-const stats = [
-    {
-        icon: <Globe size={28} />,
-        value: '50+',
-        label: 'Languages Supported',
-        color: 'text-indigo-500',
-        bg: 'bg-indigo-50',
-    },
-    {
-        icon: <Zap size={28} />,
-        value: 'Real-time',
-        label: 'Instant Translation',
-        color: 'text-amber-500',
-        bg: 'bg-amber-50',
-    },
-    {
-        icon: <Clock size={28} />,
-        value: '99.9%',
-        label: 'Uptime Guarantee',
-        color: 'text-emerald-500',
-        bg: 'bg-emerald-50',
-    },
-    {
-        icon: <Shield size={28} />,
-        value: 'Encrypted',
-        label: 'Data Security',
-        color: 'text-rose-500',
-        bg: 'bg-rose-50',
-    },
-];
+import { useTranslation } from '../../context/LanguageContext';
 
 const StatsSection = () => {
+    const { t } = useTranslation();
+    const stats = [
+        {
+            icon: <Globe size={28} />,
+            value: t('landing.stats.stat1Value'),
+            label: t('landing.stats.stat1Label'),
+            color: 'text-indigo-500',
+            bg: 'bg-indigo-50',
+        },
+        {
+            icon: <Zap size={28} />,
+            value: t('landing.stats.stat2Value'),
+            label: t('landing.stats.stat2Label'),
+            color: 'text-amber-500',
+            bg: 'bg-amber-50',
+        },
+        {
+            icon: <Clock size={28} />,
+            value: t('landing.stats.stat3Value'),
+            label: t('landing.stats.stat3Label'),
+            color: 'text-emerald-500',
+            bg: 'bg-emerald-50',
+        },
+        {
+            icon: <Shield size={28} />,
+            value: t('landing.stats.stat4Value'),
+            label: t('landing.stats.stat4Label'),
+            color: 'text-rose-500',
+            bg: 'bg-rose-50',
+        },
+    ];
     return (
         <section id="stats" className="py-20 bg-white relative z-10 border-t border-slate-100">
             <div className="max-w-7xl mx-auto px-6">

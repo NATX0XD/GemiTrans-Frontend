@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Languages, Menu, X } from 'lucide-react';
+import { useTranslation } from '../../context/LanguageContext';
 import HeroSection from './HeroSection';
 import DemoSection from './DemoSection';
 import FeaturesSection from './FeaturesSection';
@@ -11,6 +12,7 @@ import CTASection from './CTASection';
 import Footer from './Footer';
 
 const Landing = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
@@ -32,11 +34,11 @@ const Landing = () => {
     };
 
     const navLinks = [
-        { name: 'Demo', id: 'demo' },
-        { name: 'Features', id: 'features' },
-        { name: 'How it Works', id: 'how-it-works' },
-        { name: 'Efficiency', id: 'stats' },
-        { name: 'Pricing', id: 'pricing' },
+        { name: t('landing.nav.demo'), id: 'demo' },
+        { name: t('landing.nav.features'), id: 'features' },
+        { name: t('landing.nav.howItWorks'), id: 'how-it-works' },
+        { name: t('landing.nav.efficiency'), id: 'stats' },
+        { name: t('landing.nav.pricing'), id: 'pricing' },
     ];
 
     return (
@@ -73,13 +75,13 @@ const Landing = () => {
                             onClick={() => navigate('/login')}
                             className="hidden lg:block text-slate-600 hover:text-slate-900 font-bold text-sm px-4 py-2 transition-colors mr-2 border-0 bg-transparent cursor-pointer"
                         >
-                            Sign In
+                            {t('landing.nav.signIn')}
                         </button>
                         <button
                             onClick={() => navigate('/login')}
                             className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-full font-bold text-sm shadow-sm transition-all duration-300 active:scale-95 border-0 cursor-pointer"
                         >
-                            Join for Free
+                            {t('landing.nav.joinFree')}
                         </button>
 
                         {/* Mobile Menu Toggle */}
@@ -131,13 +133,13 @@ const Landing = () => {
                                     onClick={() => navigate('/login')}
                                     className="py-4 bg-slate-100 text-slate-900 rounded-2xl font-bold text-base border-2 border-purple-300 cursor-pointer"
                                 >
-                                    Sign In
+                                    {t('landing.nav.signIn')}
                                 </button>
                                 <button
                                     onClick={() => navigate('/login')}
                                     className="py-4 bg-slate-900 text-white rounded-2xl font-bold text-base border-0 cursor-pointer"
                                 >
-                                    Get Started
+                                    {t('landing.nav.getStarted')}
                                 </button>
                             </div>
                         </div>

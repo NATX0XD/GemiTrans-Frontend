@@ -1,55 +1,57 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Globe2, MessageCircle, Zap } from 'lucide-react';
+import { useTranslation } from '../../context/LanguageContext';
 
 const demoData = {
     japanese: {
-        label: 'Japanese',
+        labelKey: 'landing.demo.lang.japanese',
         source: 'Could you explain this to me?',
         standard: 'これを説明してくれますか？', // Grammatically correct but very flat/direct
         tones: [
             {
-                level: 'Casual',
+                levelKey: 'landing.demo.tone.casual',
                 text: 'これ、教えてくれる？',
-                context: 'Friends or family'
+                contextKey: 'landing.demo.context.friendsFamily'
             },
             {
-                level: 'Business',
+                levelKey: 'landing.demo.tone.business',
                 text: 'こちらについて、ご説明いただけますでしょうか？',
-                context: 'Co-workers or clients'
+                contextKey: 'landing.demo.context.coworkersClients'
             },
             {
-                level: 'Honorific',
+                levelKey: 'landing.demo.tone.honorific',
                 text: '大変恐縮ですが、こちらについてご教示いただけますと幸いです。',
-                context: 'Superior or formal proposal'
+                contextKey: 'landing.demo.context.superiorFormal'
             }
         ]
     },
     thai: {
-        label: 'Thai',
+        labelKey: 'landing.demo.lang.thai',
         source: 'I want to go to the meeting.',
         standard: 'ฉันต้องการไปประชุม', // Very robotic
         tones: [
             {
-                level: 'Casual',
+                levelKey: 'landing.demo.tone.casual',
                 text: 'เดี๋ยวไปเข้าประชุมก่อนนะ',
-                context: 'Close colleagues'
+                contextKey: 'landing.demo.context.closeColleagues'
             },
             {
-                level: 'Business',
+                levelKey: 'landing.demo.tone.business',
                 text: 'ผม/ดิฉัน ขออนุญาตเข้าร่วมการประชุมในครั้งนี้ครับ/คะ',
-                context: 'Professional setting'
+                contextKey: 'landing.demo.context.professionalSetting'
             },
             {
-                level: 'Formal',
+                levelKey: 'landing.demo.tone.formal',
                 text: 'ใคร่ขอเรียนแจ้งความประสงค์ในการเข้าร่วมประชุมตามวาระดังกล่าว',
-                context: 'Official correspondence'
+                contextKey: 'landing.demo.context.officialCorrespondence'
             }
         ]
     }
 };
 
 const DemoSection = () => {
+    const { t } = useTranslation();
     const [selectedLang, setSelectedLang] = useState('japanese');
     const [toneIndex, setToneIndex] = useState(1); // Default to Business/Neutral
 
@@ -64,13 +66,13 @@ const DemoSection = () => {
                 <div className="text-center max-w-3xl mx-auto mb-16">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-[10px] font-black uppercase tracking-widest mb-6">
                         <Sparkles size={12} fill="currentColor" />
-                        <span>Intelligence by GEMINI</span>
+                        <span>{t('landing.demo.badge')}</span>
                     </div>
                     <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-4 md:mb-6 leading-tight">
-                        Translation that understands <span className="text-indigo-600 font-black italic">context.</span>
+                        {t('landing.demo.headingBefore')} <span className="text-indigo-600 font-black italic">{t('landing.demo.headingHighlight')}</span>
                     </h2>
                     <p className="text-lg md:text-xl text-slate-600 font-medium leading-relaxed">
-                        Standard translators give you words. We give you the right <span className="text-slate-900 font-bold underline decoration-indigo-400 underline-offset-4 font-black">tone</span> for every situation.
+                        {t('landing.demo.subheadingPart1')} <span className="text-slate-900 font-bold underline decoration-indigo-400 underline-offset-4 font-black">{t('landing.demo.subheadingTone')}</span> {t('landing.demo.subheadingPart2')}
                     </p>
                 </div>
 
@@ -87,8 +89,8 @@ const DemoSection = () => {
                         {/* 1. Language Toggle */}
                         <div className="bg-slate-50 p-5 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 flex flex-col gap-6">
                             <div>
-                                <h3 className="text-base md:text-lg font-bold text-slate-900 mb-1 md:mb-2">Select Language</h3>
-                                <p className="text-xs md:text-sm text-slate-500 font-medium mb-4">See how nuances change across languages.</p>
+                                <h3 className="text-base md:text-lg font-bold text-slate-900 mb-1 md:mb-2">{t('landing.demo.selectLanguage')}</h3>
+                                <p className="text-xs md:text-sm text-slate-500 font-medium mb-4">{t('landing.demo.selectLanguageDesc')}</p>
                                 <div className="flex gap-2">
                                     {Object.keys(demoData).map(lang => (
                                         <button
@@ -101,7 +103,7 @@ const DemoSection = () => {
                                             }`}
                                         >
                                             <Globe2 size={14} className="md:w-4 md:h-4" />
-                                            {demoData[lang].label}
+                                            {t(demoData[lang].labelKey)}
                                         </button>
                                     ))}
                                 </div>
@@ -111,11 +113,11 @@ const DemoSection = () => {
                             <div className="space-y-4 md:space-y-6">
                                 <div className="flex justify-between items-end">
                                     <div>
-                                        <h3 className="text-base md:text-lg font-bold text-slate-900 mb-0.5 md:mb-1">Adjust Tone</h3>
-                                        <p className="text-xs md:text-sm text-slate-500 font-medium">Switch between politeness levels.</p>
+                                        <h3 className="text-base md:text-lg font-bold text-slate-900 mb-0.5 md:mb-1">{t('landing.demo.adjustTone')}</h3>
+                                        <p className="text-xs md:text-sm text-slate-500 font-medium">{t('landing.demo.adjustToneDesc')}</p>
                                     </div>
                                     <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-[10px] md:text-xs font-black rounded-lg">
-                                        {currentTone.level}
+                                        {t(currentTone.levelKey)}
                                     </span>
                                 </div>
                                 
@@ -130,12 +132,12 @@ const DemoSection = () => {
                                         className="w-full h-1.5 md:h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
                                     />
                                     <div className="flex justify-between mt-3">
-                                        {currentData.tones.map((t, idx) => (
+                                        {currentData.tones.map((tone, idx) => (
                                             <span 
                                                 key={idx}
                                                 className={`text-[9px] md:text-[10px] font-bold uppercase tracking-wider transition-colors ${idx === toneIndex ? 'text-indigo-600' : 'text-slate-400'}`}
                                             >
-                                                {t.level}
+                                                {t(tone.levelKey)}
                                             </span>
                                         ))}
                                     </div>
@@ -146,8 +148,8 @@ const DemoSection = () => {
                                         <MessageCircle size={16} />
                                     </div>
                                     <div>
-                                        <p className="text-[11px] font-bold text-indigo-400 uppercase tracking-tight">Best for</p>
-                                        <p className="text-sm font-semibold text-slate-700">{currentTone.context}</p>
+                                        <p className="text-[11px] font-bold text-indigo-400 uppercase tracking-tight">{t('landing.demo.bestFor')}</p>
+                                        <p className="text-sm font-semibold text-slate-700">{t(currentTone.contextKey)}</p>
                                     </div>
                                 </div>
                             </div>
@@ -158,7 +160,7 @@ const DemoSection = () => {
                             <div className="p-4 md:p-6 rounded-3xl bg-white border border-slate-100 shadow-sm leading-tight">
                                 <div className="flex items-center gap-1.5 mb-2 grayscale">
                                     <Globe2 size={12} className="text-slate-400" />
-                                    <span className="text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Standard</span>
+                                    <span className="text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{t('landing.demo.standard')}</span>
                                 </div>
                                 <p className="text-xs md:text-sm text-slate-400 font-medium line-through decoration-red-300 opacity-60">
                                     {currentData.standard}
@@ -167,7 +169,7 @@ const DemoSection = () => {
                             <div className="p-4 md:p-6 rounded-3xl bg-indigo-600 border border-indigo-500 shadow-xl shadow-indigo-600/10 text-white relative overflow-hidden group">
                                 <div className="flex items-center gap-1.5 mb-2 relative z-10">
                                     <Zap size={12} className="text-indigo-200 fill-indigo-200" />
-                                    <span className="text-[8px] md:text-[10px] font-black text-indigo-100 uppercase tracking-widest leading-none">AI Workbench</span>
+                                    <span className="text-[8px] md:text-[10px] font-black text-indigo-100 uppercase tracking-widest leading-none">{t('landing.demo.aiWorkbench')}</span>
                                 </div>
                                 <p className="text-xs md:text-sm font-bold relative z-10 leading-tight">
                                     {currentTone.text}
@@ -201,7 +203,7 @@ const DemoSection = () => {
                                         <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400">
                                             <span className="text-[10px] md:text-xs font-black">EN</span>
                                         </div>
-                                        <span className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest">Input</span>
+                                        <span className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest">{t('landing.demo.input')}</span>
                                     </div>
                                     <div className="pl-0.5 md:pl-1">
                                         <p className="text-xl md:text-2xl font-bold text-white leading-tight">
@@ -223,7 +225,7 @@ const DemoSection = () => {
                                         <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-indigo-900/50 flex items-center justify-center text-indigo-400 border border-indigo-500/30">
                                             <span className="text-[10px] md:text-xs font-black uppercase">{selectedLang.slice(0, 2)}</span>
                                         </div>
-                                        <span className="text-[10px] md:text-xs font-black text-indigo-400 uppercase tracking-widest whitespace-nowrap">Refined — {currentTone.level}</span>
+                                        <span className="text-[10px] md:text-xs font-black text-indigo-400 uppercase tracking-widest whitespace-nowrap">{t('landing.demo.refined')} — {t(currentTone.levelKey)}</span>
                                     </div>
                                     <div className="pl-0.5 md:pl-1">
                                         <p className="text-xl md:text-2xl font-black text-indigo-100 leading-tight transition-all duration-500">

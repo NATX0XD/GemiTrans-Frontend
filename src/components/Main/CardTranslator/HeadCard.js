@@ -4,12 +4,14 @@ import { Trash2, ChevronDown, GripVertical } from 'lucide-react';
 import ConfirmModal from '../Modal/ConfirmModal';
 import objectiveList from '../../../configuration/objectiveList';
 import { availableLanguages } from '../../../configuration/availableLanguages';
+import { useTranslation } from '../../../context/LanguageContext';
 
 const ContextDropdown = ({ selectedValue, onChange }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const selectedLabel = objectiveList.find(o => o.value === selectedValue)?.label || 'ทั่วไป';
+  const selectedLabel = objectiveList.find(o => o.value === selectedValue)?.label || t('translator.head.generalObjective');
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -62,6 +64,7 @@ const ContextDropdown = ({ selectedValue, onChange }) => {
 };
 
 const HeadCard = ({ card, onUpdateCard, onRemoveCard, canRemove, onOpenLangModal, dragHandleProps }) => {
+  const { t } = useTranslation();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const currentLanguageLabel = availableLanguages.find(l => l.value === card.lang)?.label || card.lang;
 
@@ -75,15 +78,15 @@ const HeadCard = ({ card, onUpdateCard, onRemoveCard, canRemove, onOpenLangModal
 
   return (
     <>
-      <div className="flex items-center justify-between px-4 pt-5 pb-2 bg-transparent shrink-0">
+      <div className="flex items-center justify-between flex-wrap gap-2 px-4 pt-5 pb-2 bg-transparent shrink-0">
 
         {/* Left Side: Drag Handle & Language Box */}
         <div className="flex items-center gap-1">
           {/* Drag Handle */}
-          <div 
+          <div
             {...dragHandleProps}
             className="p-1.5 text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 cursor-grab active:cursor-grabbing hover:bg-slate-200/40 dark:hover:bg-slate-800/40 rounded-lg transition-all"
-            title="Drag to reorder"
+            title={t('translator.head.dragToReorder')}
           >
             <GripVertical size={20} />
           </div>
@@ -93,7 +96,7 @@ const HeadCard = ({ card, onUpdateCard, onRemoveCard, canRemove, onOpenLangModal
             onClick={() => onOpenLangModal(card.id)}
             className="h-9 px-4 bg-slate-200/50 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors rounded-xl flex items-center gap-2 cursor-pointer border-0 outline-none ml-1 shadow-sm"
           >
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-500">Translate to</span>
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-500">{t('translator.head.translateTo')}</span>
             <span className="text-sm font-bold text-slate-800 dark:text-slate-200">{currentLanguageLabel}</span>
           </button>
         </div>
@@ -101,7 +104,7 @@ const HeadCard = ({ card, onUpdateCard, onRemoveCard, canRemove, onOpenLangModal
         {/* Right Side: Context & Delete */}
         <div className="flex items-center gap-3">
           <div className="flex items-center bg-slate-200/50 dark:bg-slate-800 rounded-xl px-4 h-9 shadow-sm">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-500 mr-2 whitespace-nowrap">Style</span>
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-500 mr-2 whitespace-nowrap">{t('translator.head.style')}</span>
             <ContextDropdown
               selectedValue={card.objective}
               onChange={(val) => onUpdateCard(card.id, 'objective', val)}
@@ -128,8 +131,8 @@ const HeadCard = ({ card, onUpdateCard, onRemoveCard, canRemove, onOpenLangModal
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={confirmDelete}
-        title="Delete Translation Card"
-        message={`Are you sure you want to remove the translation card for ${currentLanguageLabel}?`}
+        title={t('translator.head.deleteCardTitle')}
+        message={t('translator.head.deleteCardMessage', { lang: currentLanguageLabel })}
       />
     </>
   );

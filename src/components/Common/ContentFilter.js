@@ -8,16 +8,17 @@ import {
   ArrowUpNarrowWide,
   Clock
 } from 'lucide-react';
-import { 
-  Input, 
-  Button, 
-  Dropdown, 
-  DropdownTrigger, 
-  DropdownMenu, 
+import {
+  Input,
+  Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
   DropdownItem
 } from '@heroui/react';
+import { useTranslation } from '../../context/LanguageContext';
 
-const ContentFilter = ({ 
+const ContentFilter = ({
   title,
   description,
   viewMode, 
@@ -31,6 +32,7 @@ const ContentFilter = ({
   label = "Items",
   color = "indigo" // Default color
 }) => {
+  const { t } = useTranslation();
   // Color mapping for dynamic styles
   const colorMap = {
     indigo: {
@@ -115,11 +117,11 @@ const ContentFilter = ({
                 startContent={sortBy === 'latest' ? <ArrowDownWideNarrow size={18} className={theme.icon} /> : <ArrowUpNarrowWide size={18} className={theme.icon} />}
                 endContent={<ChevronDown size={14} className="opacity-40" />}
               >
-                {sortBy === 'latest' ? 'Latest' : 'Oldest'}
+                {sortBy === 'latest' ? t('lists.latest') : t('lists.oldest')}
               </Button>
             </DropdownTrigger>
-            <DropdownMenu 
-              aria-label="Sort options"
+            <DropdownMenu
+              aria-label={t('lists.sortOptions')}
               disallowEmptySelection
               selectionMode="single"
               selectedKeys={new Set([sortBy])}
@@ -131,14 +133,14 @@ const ContentFilter = ({
                 startContent={<Clock size={16} />}
                 className="font-bold py-2.5 rounded-xl"
               >
-                Latest First
+                {t('lists.latestFirst')}
               </DropdownItem>
-              <DropdownItem 
-                key="oldest" 
+              <DropdownItem
+                key="oldest"
                 startContent={<ArrowUpNarrowWide size={16} />}
                 className="font-bold py-2.5 rounded-xl"
               >
-                Oldest First
+                {t('lists.oldestFirst')}
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -151,7 +153,7 @@ const ContentFilter = ({
           <Input
             value={searchQuery}
             onValueChange={setSearchQuery}
-            placeholder="Search within these records..."
+            placeholder={t('lists.searchPlaceholder')}
             startContent={<Search size={18} className="text-slate-400" />}
             variant="flat"
             radius="2xl"

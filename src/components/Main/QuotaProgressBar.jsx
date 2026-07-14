@@ -4,8 +4,10 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Database, Zap, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from '../../context/LanguageContext';
 
 const QuotaProgressBar = () => {
+    const { t } = useTranslation();
     const [quota, setQuota] = useState(null);
     const [loading, setLoading] = useState(true);
     const [uid, setUid] = useState(null);
@@ -31,8 +33,7 @@ const QuotaProgressBar = () => {
             if (doc.exists()) {
                 setQuota(doc.data());
             } else {
-                // If doc doesn't exists, backend usually creates it on first call
-                // but we can set a placeholder
+                
                 setQuota({ tokens_today: 0, daily_limit: 10000 });
             }
             setLoading(false);
@@ -50,7 +51,6 @@ const QuotaProgressBar = () => {
     const limit = quota?.daily_limit || 10000;
     const percentage = Math.min(Math.round((used / limit) * 100), 100);
     
-    // Aesthetic colors
     const isOverLimit = used >= limit;
     const isNearLimit = percentage > 85;
     
@@ -72,11 +72,11 @@ const QuotaProgressBar = () => {
                         </div>
                         <div>
                             <h4 className="text-sm font-black text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2">
-                                Daily Token Quota
-                                {isOverLimit && <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full uppercase">Limit Reached</span>}
+                                {t('translator.quotaBar.title')}
+                                {isOverLimit && <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full uppercase">{t('translator.quotaBar.limitReached')}</span>}
                             </h4>
                             <p className={`text-xs font-bold ${textColor}`}>
-                                {used.toLocaleString()} / {limit.toLocaleString()} tokens used
+                                {t('translator.quotaBar.tokensUsed', { used: used.toLocaleString(), limit: limit.toLocaleString() })}
                             </p>
                         </div>
                     </div>
@@ -92,8 +92,8 @@ const QuotaProgressBar = () => {
                             />
                         </div>
                         <div className="flex justify-between mt-1.5">
-                           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{percentage}% Consumed</span>
-                           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Resets Daily</span>
+                           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('translator.quotaBar.consumed', { percent: percentage })}</span>
+                           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('translator.quotaBar.resetsDaily')}</span>
                         </div>
                     </div>
                 </div>

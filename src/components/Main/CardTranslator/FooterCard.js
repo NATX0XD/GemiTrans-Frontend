@@ -4,17 +4,19 @@ import { SlidersHorizontal, Bookmark, BookmarkCheck, Copy, Check, Volume2 } from
 import { auth } from '../../../configuration/firebase';
 import { addSavedWord } from '../../../services/savedWordsService';
 import { speakText } from '../../../services/speechService';
+import { useTranslation } from '../../../context/LanguageContext';
 
 const FooterCard = ({ formality, onFormalityChange, sourceText, sourceLang, targetLang, objective, resultText }) => {
+  const { t } = useTranslation();
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
   const getFormalityLabel = (val) => {
-    if (val <= 30) return `${val}% · Casual`;
-    if (val <= 70) return `${val}% · Standard`;
-    return `${val}% · Formal`;
+    if (val <= 30) return `${val}% · ${t('translator.footer.casual')}`;
+    if (val <= 70) return `${val}% · ${t('translator.footer.standard')}`;
+    return `${val}% · ${t('translator.footer.formal')}`;
   };
 
   const handleSaveWord = async () => {
@@ -58,7 +60,7 @@ const FooterCard = ({ formality, onFormalityChange, sourceText, sourceLang, targ
           className="flex items-center justify-center gap-1.5 p-1.5 pr-2.5 -ml-1.5 rounded-full hover:bg-slate-200/70 dark:hover:bg-slate-800/80 active:scale-95 transition-all border-0 cursor-pointer outline-none group/icon bg-transparent"
         >
           <SlidersHorizontal size={15} className={`${isSliderOpen ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-500'} transition-colors pl-0.5`} />
-          <span className={`text-[10px] font-bold tracking-wider uppercase ${isSliderOpen ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-500'} transition-colors`}>Tone</span>
+          <span className={`text-[10px] font-bold tracking-wider uppercase ${isSliderOpen ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-500'} transition-colors`}>{t('translator.footer.tone')}</span>
         </button>
 
         <div
@@ -113,7 +115,7 @@ const FooterCard = ({ formality, onFormalityChange, sourceText, sourceLang, targ
           className="rounded-full transition-colors w-8 h-8 min-w-8 text-slate-400 dark:text-slate-500 hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
           onPress={handleSpeak}
           isDisabled={!resultText}
-          title="Listen"
+          title={t('translator.footer.listen')}
         >
           <Volume2 size={16} />
         </Button>
