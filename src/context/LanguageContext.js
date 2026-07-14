@@ -7,10 +7,10 @@ const SUPPORTED = ['en', 'th'];
 const DEFAULT_LANG = 'en';
 
 const resolveInitialLang = () => {
+    // Always start in English by default. Only honor an explicit user choice
+    // saved from the in-app toggle; no browser-language auto-detection.
     const saved = localStorage.getItem('app-lang');
     if (saved && SUPPORTED.includes(saved)) return saved;
-    const browser = (navigator.language || '').toLowerCase();
-    if (browser.startsWith('th')) return 'th';
     return DEFAULT_LANG;
 };
 
