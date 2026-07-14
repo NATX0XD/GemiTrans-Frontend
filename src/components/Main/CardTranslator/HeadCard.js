@@ -11,7 +11,8 @@ const ContextDropdown = ({ selectedValue, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const selectedLabel = objectiveList.find(o => o.value === selectedValue)?.label || t('translator.head.generalObjective');
+  const selectedObjective = objectiveList.find(o => o.value === selectedValue);
+  const selectedLabel = selectedObjective ? t(selectedObjective.labelKey) : t('translator.head.generalObjective');
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -50,7 +51,7 @@ const ContextDropdown = ({ selectedValue, onChange }) => {
                   : 'bg-transparent text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
               >
-                <span>{obj.label}</span>
+                <span>{t(obj.labelKey)}</span>
                 {isSelected && (
                   <div className="w-1.5 h-1.5 rounded-full bg-white ml-3 shrink-0"></div>
                 )}

@@ -9,6 +9,13 @@ const translator = {
         deleteCardTitle: 'Delete Translation Card',
         deleteCardMessage: 'Are you sure you want to remove the translation card for {lang}?',
       },
+      objective: {
+        general: 'General',
+        learning: 'Learning',
+        business: 'Business',
+        social: 'Social',
+        travel: 'Travel',
+      },
       footer: {
         tone: 'Tone',
         casual: 'Casual',
@@ -90,6 +97,13 @@ const translator = {
         generalObjective: 'ทั่วไป',
         deleteCardTitle: 'ลบการ์ดการแปล',
         deleteCardMessage: 'คุณแน่ใจหรือไม่ว่าต้องการลบการ์ดการแปลสำหรับ {lang}?',
+      },
+      objective: {
+        general: 'ทั่วไป',
+        learning: 'เรียนรู้',
+        business: 'ธุรกิจ',
+        social: 'โซเชียล',
+        travel: 'ท่องเที่ยว',
       },
       footer: {
         tone: 'โทน',

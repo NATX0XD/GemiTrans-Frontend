@@ -1,10 +1,12 @@
 
+// `value` is the stable code sent to the API/history; `labelKey` resolves the
+// display label through i18n (t(labelKey)).
 const objectiveList = [
-    { label: 'ทั่วไป', value: 'general' },
-    { label: 'เรียนรู้', value: 'learning' },
-    { label: 'ธุรกิจ', value: 'business' },
-    { label: 'โซเชียล', value: 'social' },
-    { label: 'ท่องเที่ยว', value: 'travel' }
+    { labelKey: 'translator.objective.general', value: 'general' },
+    { labelKey: 'translator.objective.learning', value: 'learning' },
+    { labelKey: 'translator.objective.business', value: 'business' },
+    { labelKey: 'translator.objective.social', value: 'social' },
+    { labelKey: 'translator.objective.travel', value: 'travel' }
 ];
 
 export default objectiveList
