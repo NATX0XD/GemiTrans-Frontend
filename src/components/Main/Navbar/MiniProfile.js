@@ -41,11 +41,11 @@ const MiniProfile = () => {
 
   return (
     <>
-      <div className="flex items-center gap-3 pr-1">
+      <div className="flex items-center gap-1.5 sm:gap-3 pr-1">
         {/* Search Input removed per request */}
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-1.5 mr-2">
+        <div className="flex items-center gap-1.5 sm:mr-2">
           <button
             onClick={() => setIsSettingsOpen(true)}
             className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-0 outline-none cursor-pointer bg-transparent"
@@ -64,8 +64,8 @@ const MiniProfile = () => {
             <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
               <img src={photoURL} alt="Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
-            <span className="text-sm font-bold text-slate-700 dark:text-slate-200 max-w-[120px] truncate">{shortName}</span>
-            <ChevronDown size={14} className="text-slate-400 ml-0.5" />
+            <span className="hidden sm:block text-sm font-bold text-slate-700 dark:text-slate-200 max-w-[120px] truncate">{shortName}</span>
+            <ChevronDown size={14} className="text-slate-400 ml-0.5 hidden sm:block" />
           </button>
 
           {isOpen && (

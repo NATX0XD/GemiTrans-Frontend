@@ -253,7 +253,7 @@ const TranslationWorkspace = forwardRef(({ onOpenLanguageModal }, ref) => {
           {/* Cell: Add More Language Button Area */}
           {targetCards.length < MAX_CARDS && (
             <div 
-              className={`w-full lg:h-full min-h-[140px] p-6 flex flex-col items-center justify-center border-2 border-dashed border-indigo-200/60 dark:border-slate-800 rounded-2xl bg-indigo-50/20 dark:bg-slate-900/40 hover:bg-indigo-50/50 dark:hover:bg-slate-800/60 hover:border-indigo-300/60 transition-all cursor-pointer text-indigo-400 dark:text-slate-500 hover:text-indigo-500 dark:hover:text-slate-400 group ${targetCards.length === 1 ? 'lg:col-span-2' : ''}`}
+              className={`w-full min-w-0 lg:h-full min-h-[140px] p-6 flex flex-col items-center justify-center border-2 border-dashed border-indigo-200/60 dark:border-slate-800 rounded-2xl bg-indigo-50/20 dark:bg-slate-900/40 hover:bg-indigo-50/50 dark:hover:bg-slate-800/60 hover:border-indigo-300/60 transition-all cursor-pointer text-indigo-400 dark:text-slate-500 hover:text-indigo-500 dark:hover:text-slate-400 group ${targetCards.length === 1 ? 'lg:col-span-2' : ''}`}
               onClick={handleAddCard}
             >
               <div className="w-10 h-10 rounded-full bg-indigo-100/60 dark:bg-slate-800 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">

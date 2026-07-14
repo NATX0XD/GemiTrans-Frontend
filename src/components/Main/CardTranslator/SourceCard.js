@@ -6,7 +6,7 @@ import { useTranslation } from '../../../context/LanguageContext';
 const SourceCard = ({ sourceText, detectedLang, onSourceTextChange, onTranslate, isTranslating, isDisabled }) => {
   const { t } = useTranslation();
   return (
-    <div className="w-full lg:h-full min-h-[220px] lg:min-h-0 flex flex-col bg-white/95 dark:bg-slate-900/40 backdrop-blur-3xl rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.06),0_0_40px_rgba(99,102,241,0.15)] dark:shadow-2xl dark:shadow-indigo-500/10 ring-1 ring-white dark:ring-slate-800/50 border-[1.5px] border-indigo-100/60 dark:border-slate-800 overflow-hidden relative group transition-all duration-500 hover:shadow-[0_12px_50px_rgba(0,0,0,0.08),0_0_60px_rgba(99,102,241,0.25)] hover:border-indigo-300 dark:hover:border-slate-700">
+    <div className="w-full min-w-0 lg:h-full min-h-[220px] lg:min-h-0 flex flex-col bg-white/95 dark:bg-slate-900/40 backdrop-blur-3xl rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.06),0_0_40px_rgba(99,102,241,0.15)] dark:shadow-2xl dark:shadow-indigo-500/10 ring-1 ring-white dark:ring-slate-800/50 border-[1.5px] border-indigo-100/60 dark:border-slate-800 overflow-hidden relative group transition-all duration-500 hover:shadow-[0_12px_50px_rgba(0,0,0,0.08),0_0_60px_rgba(99,102,241,0.25)] hover:border-indigo-300 dark:hover:border-slate-700">
 
       {/* Decorative Glow inside SourceCard */}
       <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-500/20 dark:bg-indigo-600/10 blur-[80px] rounded-full pointer-events-none z-0"></div>

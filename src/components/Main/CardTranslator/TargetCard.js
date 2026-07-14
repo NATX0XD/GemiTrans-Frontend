@@ -26,7 +26,7 @@ const TargetCard = ({ card, sourceText, detectedLang, onUpdateCard, onRemoveCard
     <div 
       ref={setNodeRef}
       style={style}
-      className={`w-full lg:h-full min-h-[220px] lg:min-h-0 flex flex-col bg-slate-50/60 dark:bg-slate-900/60 backdrop-blur-3xl rounded-[32px] shadow-sm border border-slate-200/60 dark:border-slate-800 overflow-hidden relative group transition-all duration-500 hover:shadow-lg dark:hover:shadow-2xl dark:hover:shadow-black/20 hover:border-slate-300 dark:hover:border-slate-700 ${isDragging ? 'cursor-grabbing shadow-2xl ring-2 ring-indigo-500/20' : ''}`}
+      className={`w-full min-w-0 lg:h-full min-h-[220px] lg:min-h-0 flex flex-col bg-slate-50/60 dark:bg-slate-900/60 backdrop-blur-3xl rounded-[32px] shadow-sm border border-slate-200/60 dark:border-slate-800 overflow-hidden relative group transition-all duration-500 hover:shadow-lg dark:hover:shadow-2xl dark:hover:shadow-black/20 hover:border-slate-300 dark:hover:border-slate-700 ${isDragging ? 'cursor-grabbing shadow-2xl ring-2 ring-indigo-500/20' : ''}`}
     >
       
       {/* Decorative Glow inside TargetCard */}
