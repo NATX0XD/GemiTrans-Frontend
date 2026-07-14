@@ -35,15 +35,12 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  if (loading) {
-    return (
-      <Loading />
-    );
-  }
-
   return (
     <DataProvider>
       <LanguageProvider>
+      {loading ? (
+        <Loading />
+      ) : (
       <Router>
         <Routes>
 
@@ -68,6 +65,7 @@ function App() {
 
         </Routes>
       </Router>
+      )}
       </LanguageProvider>
     </DataProvider>
   );
