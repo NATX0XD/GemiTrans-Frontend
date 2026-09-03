@@ -3,7 +3,7 @@ import { useTranslation } from '../../../context/LanguageContext';
 import { auth } from '../../../configuration/firebase';
 import useQuota from '../../../hooks/useQuota';
 import { createLiveSession, resolveEngine, ENGINES } from '../../../services/live';
-import { requestLiveToken, reportLiveUsage } from '../../../context/LiveApi';
+import { requestLiveToken, reportLiveUsage, prefetchIdToken } from '../../../context/LiveApi';
 import { translateTextAPI } from '../../../context/ControllerApi';
 import { buildTargets, pickTarget } from '../../../services/live/direction';
 import { speakText } from '../../../services/speechService';
@@ -39,6 +39,9 @@ const LiveWorkspace = () => {
 
   const sessionRef = useRef(null);
   const startedAtRef = useRef(null);
+  // True between a successful mint and the /api/live-usage post that releases it.
+  const mintedRef = useRef(false);
+  const idTokenRef = useRef(null);
   const utterancesRef = useRef([]);
   const autoSpeakRef = useRef(autoSpeak);
   const settingsRef = useRef({ langA: 'English', langB: 'Thai', twoWay: false });
@@ -114,6 +117,23 @@ const LiveWorkspace = () => {
     translateUtterance(id, utterance.sourceText);
   }, [translateUtterance, updateUtterance]);
 
+  /**
+   * Hand the minted session back to the server. Must run for every mint, including
+   * ones that produced no audio: the POST is what clears `live_session`, and a mint
+   * left dangling is billed as an abandoned session for the full TTL next time.
+   */
+  const releaseMint = useCallback((seconds) => {
+    if (!mintedRef.current) return;
+    mintedRef.current = false;
+
+    const currentUid = auth.currentUser?.uid || uid;
+    if (!currentUid) return;
+
+    reportLiveUsage(currentUid, seconds, { idToken: idTokenRef.current }).catch((err) =>
+      console.error('Failed to report live usage', err)
+    );
+  }, [uid]);
+
   const stopListening = useCallback(async () => {
     setListening(false);
     setActiveSpeaker(null);
@@ -121,16 +141,22 @@ const LiveWorkspace = () => {
 
     const session = sessionRef.current;
     sessionRef.current = null;
-    if (session) await session.stop();
 
     const elapsedSeconds = startedAtRef.current ? (Date.now() - startedAtRef.current) / 1000 : 0;
     startedAtRef.current = null;
 
-    const currentUid = auth.currentUser?.uid || uid;
-    if (currentUid && elapsedSeconds > 0) {
-      reportLiveUsage(currentUid, elapsedSeconds).catch((err) =>
-        console.error('Failed to report live usage', err)
-      );
+    // Bill before tearing down. This also runs from pagehide, where the document can
+    // disappear at the first await — session.stop() awaits audioContext.close(), so
+    // doing it first would leave the keepalive POST unissued.
+    releaseMint(elapsedSeconds);
+
+    if (session) {
+      // A teardown that throws must not take the history write down with it.
+      try {
+        await session.stop();
+      } catch (err) {
+        console.error('Failed to stop the live session', err);
+      }
     }
 
     const saveable = utterancesRef.current
@@ -144,12 +170,13 @@ const LiveWorkspace = () => {
         formality: DEFAULT_FORMALITY,
       }));
 
+    const currentUid = auth.currentUser?.uid || uid;
     if (currentUid && saveable.length > 0) {
       appendTranslationHistory(currentUid, saveable).catch((err) =>
         console.error('Failed to save live history', err)
       );
     }
-  }, [uid]);
+  }, [uid, releaseMint]);
 
   // `speaker` is 1 or 2 and only matters for two-way browser mode, where the
   // engine needs a fixed language and cannot detect who is talking.
@@ -161,6 +188,9 @@ const LiveWorkspace = () => {
       try {
         const minted = await requestLiveToken(auth.currentUser?.uid || uid);
         token = minted.token;
+        mintedRef.current = true;
+        // Cached now so the unload path can POST without awaiting a token refresh.
+        idTokenRef.current = await prefetchIdToken();
       } catch (err) {
         setNotice(t('live.errors.fellBackToBrowser'));
       }
@@ -168,9 +198,14 @@ const LiveWorkspace = () => {
 
     const engine = resolveEngine({ preferGemini, hasToken: Boolean(token) });
     if (!engine) {
+      releaseMint(0);
       setNotice(t('live.errors.noEngine'));
       return;
     }
+
+    // A mint we are not going to use — the resolver sent us to the browser engine —
+    // still holds live_session open, and those seconds are not Gemini's to bill.
+    if (engine !== ENGINES.GEMINI) releaseMint(0);
 
     const { langA: a, langB: b } = settingsRef.current;
 
@@ -195,19 +230,28 @@ const LiveWorkspace = () => {
       setListening(true);
     } catch (err) {
       sessionRef.current = null;
+      // Zero seconds, but the mint must still be handed back — a denied microphone
+      // would otherwise cost the user their whole daily allowance on the next try.
+      releaseMint(0);
       setNotice(err?.name === 'NotAllowedError' ? t('live.errors.micDenied') : t('live.errors.sessionFailed'));
     }
-  }, [preferGemini, uid, t, handleFinal, stopListening]);
+  }, [preferGemini, uid, t, handleFinal, stopListening, releaseMint]);
 
   // A closed tab still owes its seconds.
   useEffect(() => {
-    const handleHide = () => {
-      if (sessionRef.current) stopListening();
+    const teardown = () => {
+      // stopListening is async; an unhandled rejection here would happen mid-unload
+      // and skip nothing useful, but it would be invisible. Catch it explicitly.
+      if (sessionRef.current || mintedRef.current) {
+        Promise.resolve(stopListening()).catch((err) =>
+          console.error('Failed to close the live session', err)
+        );
+      }
     };
-    window.addEventListener('pagehide', handleHide);
+    window.addEventListener('pagehide', teardown);
     return () => {
-      window.removeEventListener('pagehide', handleHide);
-      if (sessionRef.current) stopListening();
+      window.removeEventListener('pagehide', teardown);
+      teardown();
     };
   }, [stopListening]);
 

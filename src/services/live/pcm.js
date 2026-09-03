@@ -1,8 +1,13 @@
 export const TARGET_SAMPLE_RATE = 16000;
 
 /**
- * Decimate mic audio down to 16kHz. The mic typically runs at 44.1k or 48k;
+ * Downsample mic audio to 16kHz. The mic typically runs at 44.1k or 48k;
  * Gemini's live transcription only accepts 16k.
+ *
+ * Each output sample is the mean of the source samples it covers. Point-sampling
+ * instead would alias everything above the 8kHz output Nyquist back down into the
+ * speech band — sibilance and fan noise land on top of the formants as broadband
+ * hiss. Averaging is a box filter: crude, but it rolls that content off.
  */
 export const downsampleTo16k = (input, inputSampleRate) => {
   if (inputSampleRate === TARGET_SAMPLE_RATE) return input;
@@ -15,7 +20,12 @@ export const downsampleTo16k = (input, inputSampleRate) => {
   const output = new Float32Array(outLength);
 
   for (let i = 0; i < outLength; i++) {
-    output[i] = input[Math.floor(i * ratio)];
+    const start = Math.floor(i * ratio);
+    const end = Math.min(Math.floor((i + 1) * ratio), input.length);
+
+    let sum = 0;
+    for (let j = start; j < end; j++) sum += input[j];
+    output[i] = sum / (end - start);
   }
 
   return output;

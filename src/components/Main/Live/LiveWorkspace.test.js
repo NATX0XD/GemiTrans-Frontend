@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { LanguageProvider } from '../../../context/LanguageContext';
 import LiveWorkspace from './LiveWorkspace';
 import { createLiveSession, resolveEngine, ENGINES } from '../../../services/live';
-import { requestLiveToken, reportLiveUsage } from '../../../context/LiveApi';
+import { requestLiveToken, reportLiveUsage, prefetchIdToken } from '../../../context/LiveApi';
 import { translateTextAPI } from '../../../context/ControllerApi';
 import { speakText } from '../../../services/speechService';
 import { appendTranslationHistory } from '../../../services/historyService';
@@ -32,6 +32,9 @@ beforeEach(() => {
   resolveEngine.mockReturnValue(ENGINES.GEMINI);
   requestLiveToken.mockResolvedValue({ token: 'tok', remainingSeconds: 600 });
   reportLiveUsage.mockResolvedValue({ billedSeconds: 3 });
+  prefetchIdToken.mockResolvedValue('cached-token');
+  startedSession.start.mockResolvedValue(undefined);
+  startedSession.stop.mockResolvedValue(undefined);
   translateTextAPI.mockResolvedValue({ detected: 'Thai', translations: [{ lang: 'English', text: 'Hello' }] });
   appendTranslationHistory.mockResolvedValue([]);
   createLiveSession.mockImplementation((options) => {
@@ -113,7 +116,9 @@ test('stopping reports usage and saves the session to history once', async () =>
 
   fireEvent.click(screen.getByRole('button', { name: /listening|กำลังฟัง/i }));
 
-  await waitFor(() => expect(reportLiveUsage).toHaveBeenCalledWith('user-1', expect.any(Number)));
+  await waitFor(() =>
+    expect(reportLiveUsage).toHaveBeenCalledWith('user-1', expect.any(Number), expect.any(Object))
+  );
   expect(appendTranslationHistory).toHaveBeenCalledTimes(1);
   expect(appendTranslationHistory).toHaveBeenCalledWith('user-1', [
     expect.objectContaining({ sourceText: 'สวัสดีครับ', translatedText: 'Hello', targetLang: 'English' }),
@@ -159,6 +164,82 @@ test('a denied microphone shows the permission banner', async () => {
   await startListening();
 
   expect(await screen.findByText(/microphone access was denied|ไม่ได้รับสิทธิ์ใช้ไมโครโฟน/i)).toBeInTheDocument();
+});
+
+test('a session that never starts releases the minted token', async () => {
+  // The mint already wrote live_session server-side. Without a 0-second report it
+  // survives, and the next mint bills it as an abandoned session for the full TTL —
+  // a whole day of quota burned by a denied microphone prompt.
+  startedSession.start.mockRejectedValueOnce(Object.assign(new Error('denied'), { name: 'NotAllowedError' }));
+  renderWorkspace();
+  await startListening();
+
+  await waitFor(() => expect(reportLiveUsage).toHaveBeenCalledWith('user-1', 0, expect.any(Object)));
+});
+
+test('falling back to the browser engine releases the minted token', async () => {
+  // Mint succeeded but the resolver picked Web Speech: Gemini never ran, so those
+  // seconds must not be billed against the live bucket.
+  resolveEngine.mockReturnValueOnce(ENGINES.GEMINI).mockReturnValue(ENGINES.WEB_SPEECH);
+  renderWorkspace();
+  await startListening();
+
+  await waitFor(() => expect(reportLiveUsage).toHaveBeenCalledWith('user-1', 0, expect.any(Object)));
+  expect(createLiveSession).toHaveBeenCalledWith(expect.objectContaining({ engine: ENGINES.WEB_SPEECH }));
+});
+
+test('a browser-only session is never billed for live seconds', async () => {
+  requestLiveToken.mockRejectedValue(Object.assign(new Error('no billing'), { status: 502 }));
+  resolveEngine.mockReturnValue(ENGINES.WEB_SPEECH);
+  renderWorkspace();
+  await startListening();
+
+  fireEvent.click(screen.getByRole('button', { name: /listening|กำลังฟัง/i }));
+
+  await waitFor(() => expect(startedSession.stop).toHaveBeenCalled());
+  expect(reportLiveUsage).not.toHaveBeenCalled();
+});
+
+test('usage is reported before the engine is torn down', async () => {
+  // stopListening also runs from pagehide. Awaiting session.stop() first means the
+  // document can be gone before the keepalive POST is ever issued.
+  const order = [];
+  startedSession.stop.mockImplementation(() => {
+    order.push('stop');
+    return Promise.resolve();
+  });
+  reportLiveUsage.mockImplementation(() => {
+    order.push('report');
+    return Promise.resolve({ billedSeconds: 3 });
+  });
+
+  renderWorkspace();
+  await startListening();
+  fireEvent.click(screen.getByRole('button', { name: /listening|กำลังฟัง/i }));
+
+  await waitFor(() => expect(order).toEqual(['report', 'stop']));
+});
+
+test('a failing engine teardown still bills the session', async () => {
+  startedSession.stop.mockRejectedValueOnce(new Error('audioContext already closed'));
+  renderWorkspace();
+  await startListening();
+
+  fireEvent.click(screen.getByRole('button', { name: /listening|กำลังฟัง/i }));
+
+  await waitFor(() => expect(reportLiveUsage).toHaveBeenCalled());
+});
+
+test('the bearer token is prefetched at start for the unload path', async () => {
+  prefetchIdToken.mockResolvedValue('cached-token');
+  renderWorkspace();
+  await startListening();
+
+  fireEvent.click(screen.getByRole('button', { name: /listening|กำลังฟัง/i }));
+
+  await waitFor(() =>
+    expect(reportLiveUsage).toHaveBeenCalledWith('user-1', expect.any(Number), { idToken: 'cached-token' })
+  );
 });
 
 test('no available engine disables the mic', async () => {

@@ -18,13 +18,42 @@ test('downsampling passes 16kHz audio through untouched', () => {
   expect(Array.from(out)).toEqual(Array.from(new Float32Array([0.1, -0.2, 0.3])));
 });
 
-test('downsampling preserves the signal, not just the length', () => {
-  // 6 samples at 48kHz -> 2 samples at 16kHz, taking every 3rd.
+test('downsampling averages each source window instead of point-sampling', () => {
+  // 6 samples at 48kHz -> 2 samples at 16kHz, each the mean of its 3 source samples.
   const input = new Float32Array([1, 0, 0, -1, 0, 0]);
   const out = downsampleTo16k(input, 48000);
   expect(out.length).toBe(2);
-  expect(out[0]).toBeCloseTo(1, 5);
-  expect(out[1]).toBeCloseTo(-1, 5);
+  expect(out[0]).toBeCloseTo(1 / 3, 5);
+  expect(out[1]).toBeCloseTo(-1 / 3, 5);
+});
+
+const sine = (freq, sampleRate, length) => {
+  const out = new Float32Array(length);
+  for (let i = 0; i < length; i++) out[i] = Math.sin((2 * Math.PI * freq * i) / sampleRate);
+  return out;
+};
+
+const rms = (samples) => {
+  let sum = 0;
+  for (let i = 0; i < samples.length; i++) sum += samples[i] * samples[i];
+  return Math.sqrt(sum / samples.length);
+};
+
+test('downsampling attenuates above the 8kHz Nyquist without eating speech', () => {
+  // 12kHz cannot be represented at 16kHz. Naive decimation folds it down to 4kHz at
+  // full amplitude (rms ratio 1.0), straight onto speech formants.
+  const aliasing = sine(12000, 48000, 4800);
+  const aliasingOut = downsampleTo16k(aliasing, 48000);
+  expect(aliasingOut.length).toBe(1600);
+  expect(rms(aliasingOut)).toBeLessThan(rms(aliasing) * 0.5);
+
+  // The other half of the guard: a frequency well under the limit, on the 44.1kHz
+  // non-integer-ratio path, must survive. Stops "fix the aliasing" from becoming
+  // a filter that also removes the voice.
+  const speech = sine(300, 44100, 4410);
+  const speechOut = downsampleTo16k(speech, 44100);
+  expect(speechOut.length).toBe(1600);
+  expect(rms(speechOut)).toBeGreaterThan(rms(speech) * 0.95);
 });
 
 test('float samples become little-endian int16', () => {
