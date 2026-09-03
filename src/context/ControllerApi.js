@@ -1,9 +1,8 @@
-
-const API_BASE_URL = process.env.REACT_APP_TRANSLATION_API_URL || 'https://translator-api-iota.vercel.app/api/translate';
+import { TRANSLATE_URL } from './apiBase';
 
 export const translateTextAPI = async (payload) => {
   try {
-    const response = await fetch(API_BASE_URL, {
+    const response = await fetch(TRANSLATE_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
