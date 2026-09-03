@@ -31,9 +31,12 @@ export const translateTextAPI = async (payload) => {
     // A 200 whose body is empty or unparseable used to throw a SyntaxError, which the
     // UI showed as a failure. Quietly returning {} instead would render an empty
     // translation card with no error, so keep it a failure — just a legible one.
+    // `status` is a sentinel null rather than the literal 200: this is a thrown
+    // error, and an `err.status >= 500` style check must not read 200 as the fault.
     if (data === null) {
       const error = new Error('The translation service returned an unreadable response.');
-      error.status = response.status;
+      error.status = null;
+      error.code = 'UNREADABLE_BODY';
       error.data = { message: raw.slice(0, 200) };
       throw error;
     }

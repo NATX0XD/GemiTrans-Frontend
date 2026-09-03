@@ -55,6 +55,17 @@ test('an empty 200 is an error, not an empty translation', async () => {
   await expect(translateTextAPI({ uid: 'user-1' })).rejects.toThrow();
 });
 
+test('an unreadable body does not report 200 as a failure status', async () => {
+  // Carrying the HTTP status verbatim makes `err.status` 200 on a thrown error, so
+  // any future `err.status >= 500` style check reads a success code as the fault.
+  global.fetch.mockResolvedValue({ ok: true, status: 200, text: async () => '' });
+
+  await expect(translateTextAPI({ uid: 'user-1' })).rejects.toMatchObject({
+    status: null,
+    code: 'UNREADABLE_BODY',
+  });
+});
+
 test('an unparseable 200 is an error too', async () => {
   global.fetch.mockResolvedValue({ ok: true, status: 200, text: async () => '<!DOCTYPE html>' });
 

@@ -1,10 +1,11 @@
 import { API_ROOT } from './apiBase';
 import { auth } from '../configuration/firebase';
 
-const shapedError = (message, status, data) => {
+const shapedError = (message, status, data, code) => {
   const error = new Error(message);
   error.status = status;
   error.data = data;
+  if (code) error.code = code;
   return error;
 };
 
@@ -22,7 +23,10 @@ const idToken = async () => {
 export const prefetchIdToken = async () => {
   try {
     return await idToken();
-  } catch {
+  } catch (err) {
+    // Not fatal — the caller can still mint one later — but it silently downgrades
+    // the unload path back to awaiting a refresh, so it must not vanish.
+    console.error('Failed to cache a live ID token; an unload report may be dropped', err);
     return null;
   }
 };
@@ -49,21 +53,47 @@ const postJson = async (path, body, { keepalive = false, idToken: presetToken } 
   // empty body. Parsing before the ok check threw a SyntaxError that carried no .status,
   // so callers branching on `err.status === 429` never matched.
   const raw = await response.text();
-  let data = {};
+  let data = null;
   try {
-    data = raw ? JSON.parse(raw) : {};
+    data = raw ? JSON.parse(raw) : null;
   } catch {
-    data = { message: raw.slice(0, 200) };
+    data = null;
   }
 
   if (!response.ok) {
-    throw shapedError(data.message || `API error: ${response.status}`, response.status, data);
+    throw shapedError(
+      (data && data.message) || `API error: ${response.status}`,
+      response.status,
+      data || { message: raw.slice(0, 200) }
+    );
+  }
+
+  // A 200 we cannot read is a server fault. Coercing it to {} made requestLiveToken
+  // resolve {token: undefined}, which the workspace then showed the user as
+  // "fell back to browser speech" rather than as the outage it is. `status` is a
+  // sentinel null so an `err.status >= 500` style check cannot read 200 as the fault.
+  if (data === null) {
+    throw shapedError(
+      'The live service returned an unreadable response.',
+      null,
+      { message: raw.slice(0, 200) },
+      'UNREADABLE_BODY'
+    );
   }
 
   return data;
 };
 
 export const requestLiveToken = (uid) => postJson('/live-token', { uid });
+
+/**
+ * Mark the minted session as actually started. Abandoned-session billing only charges
+ * confirmed sessions, so a mint whose response was lost, or that never opened a
+ * socket, costs the user nothing. `uid` is taken from the verified bearer server-side;
+ * it stays in the signature only to match the other live calls.
+ */
+// eslint-disable-next-line no-unused-vars
+export const confirmLiveSession = (uid) => postJson('/live-confirm', {});
 
 /**
  * Report a finished session. Always POSTs, including at 0 seconds: the server clamps

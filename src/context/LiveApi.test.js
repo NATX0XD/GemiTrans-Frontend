@@ -1,4 +1,4 @@
-import { requestLiveToken, reportLiveUsage, prefetchIdToken } from './LiveApi';
+import { requestLiveToken, reportLiveUsage, prefetchIdToken, confirmLiveSession } from './LiveApi';
 import { auth } from '../configuration/firebase';
 
 jest.mock('../configuration/firebase', () => ({
@@ -164,4 +164,54 @@ test('prefetchIdToken resolves null instead of throwing when signed out', async 
   auth.currentUser = null;
 
   await expect(prefetchIdToken()).resolves.toBeNull();
+});
+
+test('prefetchIdToken logs the failure it swallows', async () => {
+  // Resolving null silently would leave the unload path awaiting a fresh token —
+  // the stranding this whole mechanism exists to avoid — with no trace of why.
+  const logged = jest.spyOn(console, 'error').mockImplementation(() => {});
+  auth.currentUser = { getIdToken: jest.fn().mockRejectedValue(new Error('network down')) };
+
+  await expect(prefetchIdToken()).resolves.toBeNull();
+  expect(logged).toHaveBeenCalled();
+});
+
+test('confirmLiveSession posts an empty body to /live-confirm', async () => {
+  // Only a confirmed session is eligible for abandoned billing, so a mint whose
+  // socket never opened costs the user nothing.
+  global.fetch.mockResolvedValue(jsonResponse({ confirmed: true }));
+
+  await confirmLiveSession('user-1');
+
+  const [url, options] = global.fetch.mock.calls[0];
+  expect(url).toMatch(/\/live-confirm$/);
+  expect(JSON.parse(options.body)).toEqual({});
+  expect(options.headers.Authorization).toBe('Bearer id-token-abc');
+});
+
+test('an unreadable 200 is a server fault, not an empty payload', async () => {
+  // requestLiveToken used to resolve {token: undefined} here, which the workspace
+  // then reported to the user as "fell back to browser speech".
+  global.fetch.mockResolvedValue({
+    ok: true,
+    status: 200,
+    text: async () => '<!DOCTYPE html>',
+  });
+
+  await expect(requestLiveToken('user-1')).rejects.toThrow();
+});
+
+test('an empty 200 is a server fault too', async () => {
+  global.fetch.mockResolvedValue({ ok: true, status: 200, text: async () => '' });
+
+  await expect(requestLiveToken('user-1')).rejects.toThrow();
+});
+
+test('an unreadable body does not carry a success status', async () => {
+  global.fetch.mockResolvedValue({ ok: true, status: 200, text: async () => 'not json' });
+
+  await expect(requestLiveToken('user-1')).rejects.toMatchObject({
+    status: null,
+    code: 'UNREADABLE_BODY',
+  });
 });

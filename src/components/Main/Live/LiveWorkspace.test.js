@@ -2,7 +2,12 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { LanguageProvider } from '../../../context/LanguageContext';
 import LiveWorkspace from './LiveWorkspace';
 import { createLiveSession, resolveEngine, ENGINES } from '../../../services/live';
-import { requestLiveToken, reportLiveUsage, prefetchIdToken } from '../../../context/LiveApi';
+import {
+  requestLiveToken,
+  reportLiveUsage,
+  prefetchIdToken,
+  confirmLiveSession,
+} from '../../../context/LiveApi';
 import { translateTextAPI } from '../../../context/ControllerApi';
 import { speakText } from '../../../services/speechService';
 import { appendTranslationHistory } from '../../../services/historyService';
@@ -33,6 +38,7 @@ beforeEach(() => {
   requestLiveToken.mockResolvedValue({ token: 'tok', remainingSeconds: 600 });
   reportLiveUsage.mockResolvedValue({ billedSeconds: 3 });
   prefetchIdToken.mockResolvedValue('cached-token');
+  confirmLiveSession.mockResolvedValue({ confirmed: true });
   startedSession.start.mockResolvedValue(undefined);
   startedSession.stop.mockResolvedValue(undefined);
   translateTextAPI.mockResolvedValue({ detected: 'Thai', translations: [{ lang: 'English', text: 'Hello' }] });
@@ -228,6 +234,63 @@ test('a failing engine teardown still bills the session', async () => {
   fireEvent.click(screen.getByRole('button', { name: /listening|กำลังฟัง/i }));
 
   await waitFor(() => expect(reportLiveUsage).toHaveBeenCalled());
+});
+
+test('a started session is confirmed so the server can bill it if abandoned', async () => {
+  renderWorkspace();
+  await startListening();
+
+  await waitFor(() => expect(confirmLiveSession).toHaveBeenCalledWith('user-1'));
+});
+
+test('a session that never starts is never confirmed', async () => {
+  startedSession.start.mockRejectedValueOnce(Object.assign(new Error('denied'), { name: 'NotAllowedError' }));
+  renderWorkspace();
+  await startListening();
+
+  await waitFor(() => expect(reportLiveUsage).toHaveBeenCalled());
+  expect(confirmLiveSession).not.toHaveBeenCalled();
+});
+
+test('a browser-only session is never confirmed', async () => {
+  requestLiveToken.mockRejectedValue(Object.assign(new Error('no billing'), { status: 502 }));
+  resolveEngine.mockReturnValue(ENGINES.WEB_SPEECH);
+  renderWorkspace();
+  await startListening();
+
+  expect(confirmLiveSession).not.toHaveBeenCalled();
+});
+
+test('a failed confirmation never breaks the running session', async () => {
+  // Fire-and-forget: the socket is already open and transcribing.
+  confirmLiveSession.mockRejectedValue(new Error('confirm endpoint down'));
+  renderWorkspace();
+  await startListening();
+
+  engineHandlers.onFinal({ text: 'สวัสดีครับ' });
+
+  expect(await screen.findByText('Hello')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /listening|กำลังฟัง/i })).toBeInTheDocument();
+});
+
+test('a failed prefetch clears the cached bearer instead of reusing a stale one', async () => {
+  // Second session: without clearing, the unload POST goes out with session one's
+  // token and 401s, silently losing the billing keepalive was added to protect.
+  renderWorkspace();
+  await startListening();
+  fireEvent.click(screen.getByRole('button', { name: /listening|กำลังฟัง/i }));
+  await waitFor(() => expect(reportLiveUsage).toHaveBeenCalled());
+
+  prefetchIdToken.mockResolvedValue(null);
+  reportLiveUsage.mockClear();
+  // startListening() waits on createLiveSession, which session one already satisfied.
+  createLiveSession.mockClear();
+  await startListening();
+  fireEvent.click(screen.getByRole('button', { name: /listening|กำลังฟัง/i }));
+
+  await waitFor(() =>
+    expect(reportLiveUsage).toHaveBeenCalledWith('user-1', expect.any(Number), { idToken: null })
+  );
 });
 
 test('the bearer token is prefetched at start for the unload path', async () => {

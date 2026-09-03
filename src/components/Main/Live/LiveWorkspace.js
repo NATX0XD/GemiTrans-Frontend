@@ -3,7 +3,12 @@ import { useTranslation } from '../../../context/LanguageContext';
 import { auth } from '../../../configuration/firebase';
 import useQuota from '../../../hooks/useQuota';
 import { createLiveSession, resolveEngine, ENGINES } from '../../../services/live';
-import { requestLiveToken, reportLiveUsage, prefetchIdToken } from '../../../context/LiveApi';
+import {
+  requestLiveToken,
+  reportLiveUsage,
+  prefetchIdToken,
+  confirmLiveSession,
+} from '../../../context/LiveApi';
 import { translateTextAPI } from '../../../context/ControllerApi';
 import { buildTargets, pickTarget } from '../../../services/live/direction';
 import { speakText } from '../../../services/speechService';
@@ -190,6 +195,8 @@ const LiveWorkspace = () => {
         token = minted.token;
         mintedRef.current = true;
         // Cached now so the unload path can POST without awaiting a token refresh.
+        // Always overwritten, including with null: keeping the previous session's
+        // bearer here would send the unload POST out with a stale token and 401.
         idTokenRef.current = await prefetchIdToken();
       } catch (err) {
         setNotice(t('live.errors.fellBackToBrowser'));
@@ -226,6 +233,17 @@ const LiveWorkspace = () => {
     try {
       await session.start();
       startedAtRef.current = Date.now();
+
+      // The socket is open, so this mint is now eligible for abandoned-session
+      // billing. Fire-and-forget: the session is already running and a confirmation
+      // that fails must not take it down — the worst case is the server declining to
+      // bill a session it could not confirm.
+      if (mintedRef.current) {
+        confirmLiveSession(auth.currentUser?.uid || uid).catch((err) =>
+          console.error('Failed to confirm the live session', err)
+        );
+      }
+
       setActiveSpeaker(speaker);
       setListening(true);
     } catch (err) {
