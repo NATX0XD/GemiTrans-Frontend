@@ -12,8 +12,9 @@ import saved from './zones/saved';
 import settings from './zones/settings';
 import auth from './zones/auth';
 import landing from './zones/landing';
+import live from './zones/live';
 
-const ZONES = [common, nav, translator, notebook, history, saved, settings, auth, landing];
+const ZONES = [common, nav, translator, notebook, history, saved, settings, auth, landing, live];
 
 const deepMerge = (target, source) => {
     for (const key of Object.keys(source)) {

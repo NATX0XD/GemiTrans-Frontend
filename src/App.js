@@ -17,6 +17,7 @@ import NotebookPage from './page/NotebookPage';
 import LoginPage from './page/LoginPage';
 import RegisterPage from './page/RegisterPage';
 import PageNotFound from './page/PageNotFound';
+import LivePage from './page/LivePage';
 import { DataProvider } from './context/DataContext';
 import { LanguageProvider } from './context/LanguageContext';
 import LandingPage from './page/LandingPage';
@@ -54,6 +55,7 @@ function App() {
 
           <Route element={currentUser ? <MainLayout /> : <Navigate to="/login" />}>
             <Route path="/app" element={<HomePage />} />
+            <Route path="/live" element={<LivePage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/saved" element={<SavedWordsPage />} />
             <Route path="/notes" element={<NotebookPage />} />

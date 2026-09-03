@@ -2,6 +2,7 @@ const nav = {
     en: {
         nav: {
             translate: 'Translate',
+            live: 'Live',
             notebook: 'Notebook',
             savedWords: 'Saved Words',
             history: 'History',
@@ -42,6 +43,7 @@ const nav = {
     th: {
         nav: {
             translate: 'แปลภาษา',
+            live: 'เรียลไทม์',
             notebook: 'สมุดโน้ต',
             savedWords: 'คำที่บันทึก',
             history: 'ประวัติ',
