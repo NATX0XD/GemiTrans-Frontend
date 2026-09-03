@@ -1,5 +1,345 @@
-import React from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { useTranslation } from '../../../context/LanguageContext';
+import { auth } from '../../../configuration/firebase';
+import useQuota from '../../../hooks/useQuota';
+import { createLiveSession, resolveEngine, ENGINES } from '../../../services/live';
+import { requestLiveToken, reportLiveUsage } from '../../../context/LiveApi';
+import { translateTextAPI } from '../../../context/ControllerApi';
+import { buildTargets, pickTarget } from '../../../services/live/direction';
+import { speakText } from '../../../services/speechService';
+import { appendTranslationHistory } from '../../../services/historyService';
+import LanguageSelectorModal from '../CardTranslator/LanguageSelectorModal';
+import QuotaExceededModal from '../Modal/QuotaExceededModal';
+import ModeTabs from './ModeTabs';
+import LanguagePairBar from './LanguagePairBar';
+import TwoWayToggle from './TwoWayToggle';
+import MicButton from './MicButton';
+import TranscriptStream from './TranscriptStream';
 
-const LiveWorkspace = () => <div />
+const DEFAULT_OBJECTIVE = 'general';
+const DEFAULT_FORMALITY = 50;
 
-export default LiveWorkspace
+const LiveWorkspace = () => {
+  const { t } = useTranslation();
+  const { uid, liveSecondsUsed, liveSecondsLimit } = useQuota();
+
+  const [langA, setLangA] = useState('English');
+  const [langB, setLangB] = useState('Thai');
+  const [twoWay, setTwoWay] = useState(false);
+  const [preferGemini, setPreferGemini] = useState(true);
+  const [autoSpeak, setAutoSpeak] = useState(true);
+
+  const [listening, setListening] = useState(false);
+  const [activeSpeaker, setActiveSpeaker] = useState(null);
+  const [utterances, setUtterances] = useState([]);
+  const [interimText, setInterimText] = useState('');
+  const [notice, setNotice] = useState(null);
+  const [showQuotaModal, setShowQuotaModal] = useState(false);
+  const [langPicker, setLangPicker] = useState(null);
+
+  const sessionRef = useRef(null);
+  const startedAtRef = useRef(null);
+  const utterancesRef = useRef([]);
+  const autoSpeakRef = useRef(autoSpeak);
+  const settingsRef = useRef({ langA: 'English', langB: 'Thai', twoWay: false });
+
+  useEffect(() => { autoSpeakRef.current = autoSpeak; }, [autoSpeak]);
+  useEffect(() => { utterancesRef.current = utterances; }, [utterances]);
+  useEffect(() => { settingsRef.current = { langA, langB, twoWay }; }, [langA, langB, twoWay]);
+
+  const availableEngine = resolveEngine({ preferGemini, hasToken: true });
+  const engineUnavailable = availableEngine === null;
+  // Browser recognition needs its language fixed up front, so two-way there
+  // splits into one mic per speaker. Gemini detects the language itself.
+  const perSpeakerMics = twoWay && availableEngine === ENGINES.WEB_SPEECH;
+
+  const updateUtterance = useCallback((id, patch) => {
+    setUtterances((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
+  }, []);
+
+  const translateUtterance = useCallback(async (id, text) => {
+    const { langA: a, langB: b, twoWay: isTwoWay } = settingsRef.current;
+
+    try {
+      const response = await translateTextAPI({
+        uid: auth.currentUser?.uid,
+        sourceText: text,
+        twoWay: isTwoWay,
+        targets: buildTargets({
+          twoWay: isTwoWay,
+          langA: a,
+          langB: b,
+          objective: DEFAULT_OBJECTIVE,
+          formality: DEFAULT_FORMALITY,
+        }),
+      });
+
+      const translation = response.translations?.[0];
+      const targetLang = translation?.lang
+        || (isTwoWay ? pickTarget({ detected: response.detected, langA: a, langB: b }) : b);
+
+      updateUtterance(id, {
+        status: 'done',
+        translatedText: translation?.text || '',
+        targetLang,
+        sourceLang: response.detected || a,
+      });
+
+      if (autoSpeakRef.current && translation?.text) {
+        speakText(translation.text, targetLang);
+      }
+    } catch (err) {
+      if (err.status === 429) setShowQuotaModal(true);
+      updateUtterance(id, { status: 'failed' });
+    }
+  }, [updateUtterance]);
+
+  const handleFinal = useCallback(({ text }) => {
+    setInterimText('');
+    const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    const { langA: a, langB: b } = settingsRef.current;
+
+    setUtterances((current) => [
+      ...current,
+      { id, sourceText: text, sourceLang: a, translatedText: '', targetLang: b, status: 'pending' },
+    ]);
+
+    translateUtterance(id, text);
+  }, [translateUtterance]);
+
+  const handleRetry = useCallback((id) => {
+    const utterance = utterancesRef.current.find((item) => item.id === id);
+    if (!utterance) return;
+    updateUtterance(id, { status: 'pending' });
+    translateUtterance(id, utterance.sourceText);
+  }, [translateUtterance, updateUtterance]);
+
+  const stopListening = useCallback(async () => {
+    setListening(false);
+    setActiveSpeaker(null);
+    setInterimText('');
+
+    const session = sessionRef.current;
+    sessionRef.current = null;
+    if (session) await session.stop();
+
+    const elapsedSeconds = startedAtRef.current ? (Date.now() - startedAtRef.current) / 1000 : 0;
+    startedAtRef.current = null;
+
+    const currentUid = auth.currentUser?.uid || uid;
+    if (currentUid && elapsedSeconds > 0) {
+      reportLiveUsage(currentUid, elapsedSeconds).catch((err) =>
+        console.error('Failed to report live usage', err)
+      );
+    }
+
+    const saveable = utterancesRef.current
+      .filter((item) => item.status === 'done' && item.translatedText)
+      .map((item) => ({
+        sourceText: item.sourceText,
+        sourceLang: item.sourceLang,
+        translatedText: item.translatedText,
+        targetLang: item.targetLang,
+        objective: DEFAULT_OBJECTIVE,
+        formality: DEFAULT_FORMALITY,
+      }));
+
+    if (currentUid && saveable.length > 0) {
+      appendTranslationHistory(currentUid, saveable).catch((err) =>
+        console.error('Failed to save live history', err)
+      );
+    }
+  }, [uid]);
+
+  // `speaker` is 1 or 2 and only matters for two-way browser mode, where the
+  // engine needs a fixed language and cannot detect who is talking.
+  const startListening = useCallback(async (speaker = 1) => {
+    setNotice(null);
+
+    let token = null;
+    if (preferGemini) {
+      try {
+        const minted = await requestLiveToken(auth.currentUser?.uid || uid);
+        token = minted.token;
+      } catch (err) {
+        setNotice(t('live.errors.fellBackToBrowser'));
+      }
+    }
+
+    const engine = resolveEngine({ preferGemini, hasToken: Boolean(token) });
+    if (!engine) {
+      setNotice(t('live.errors.noEngine'));
+      return;
+    }
+
+    const { langA: a, langB: b } = settingsRef.current;
+
+    const session = createLiveSession({
+      engine,
+      lang: speaker === 2 ? b : a,
+      token,
+      onPartial: setInterimText,
+      onFinal: handleFinal,
+      onError: (err) => {
+        setNotice(err?.name === 'NotAllowedError' ? t('live.errors.micDenied') : t('live.errors.sessionFailed'));
+        stopListening();
+      },
+    });
+
+    sessionRef.current = session;
+
+    try {
+      await session.start();
+      startedAtRef.current = Date.now();
+      setActiveSpeaker(speaker);
+      setListening(true);
+    } catch (err) {
+      sessionRef.current = null;
+      setNotice(err?.name === 'NotAllowedError' ? t('live.errors.micDenied') : t('live.errors.sessionFailed'));
+    }
+  }, [preferGemini, uid, t, handleFinal, stopListening]);
+
+  // A closed tab still owes its seconds.
+  useEffect(() => {
+    const handleHide = () => {
+      if (sessionRef.current) stopListening();
+    };
+    window.addEventListener('pagehide', handleHide);
+    return () => {
+      window.removeEventListener('pagehide', handleHide);
+      if (sessionRef.current) stopListening();
+    };
+  }, [stopListening]);
+
+  useEffect(() => {
+    if (engineUnavailable) setNotice(t('live.errors.noEngine'));
+  }, [engineUnavailable, t]);
+
+  const openPicker = (slot) => setLangPicker(slot);
+
+  const handlePickLanguage = (slot, lang) => {
+    if (slot === 'A') setLangA(lang);
+    if (slot === 'B') setLangB(lang);
+    setLangPicker(null);
+  };
+
+  const swapLanguages = () => {
+    setLangA(langB);
+    setLangB(langA);
+  };
+
+  const secondsLeft = Math.max(0, liveSecondsLimit - liveSecondsUsed);
+
+  return (
+    <div className="w-full flex-1 flex flex-col items-center gap-6 px-4 py-10 max-w-3xl mx-auto">
+      <h1 className="text-2xl sm:text-3xl font-semibold text-slate-800 dark:text-slate-100 text-center">
+        {t('live.heading')}
+      </h1>
+
+      <ModeTabs mode="translate" onChange={() => {}} />
+
+      <LanguagePairBar
+        langA={langA}
+        langB={langB}
+        onPickA={() => openPicker('A')}
+        onPickB={() => openPicker('B')}
+        onSwap={swapLanguages}
+        disabled={listening}
+      />
+
+      <TwoWayToggle
+        enabled={twoWay}
+        onChange={setTwoWay}
+        infoText={preferGemini ? t('live.twoWayInfo') : t('live.twoWayWebSpeechInfo')}
+        disabled={listening}
+      />
+
+      <div className="w-full flex items-center justify-between gap-4">
+        <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{t('live.highQuality')}</span>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={preferGemini}
+          aria-label={t('live.highQuality')}
+          disabled={listening}
+          onClick={() => setPreferGemini((value) => !value)}
+          className={`relative w-12 h-7 rounded-full transition-colors disabled:opacity-50 ${
+            preferGemini ? 'bg-teal-500' : 'bg-slate-200 dark:bg-slate-700'
+          }`}
+        >
+          <span className={`absolute top-1 w-5 h-5 rounded-full bg-white shadow transition-all ${preferGemini ? 'left-6' : 'left-1'}`} />
+        </button>
+      </div>
+
+      <div className="w-full flex items-center justify-between gap-4">
+        <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{t('live.autoSpeak')}</span>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={autoSpeak}
+          aria-label={t('live.autoSpeak')}
+          onClick={() => setAutoSpeak((value) => !value)}
+          className={`relative w-12 h-7 rounded-full transition-colors ${
+            autoSpeak ? 'bg-teal-500' : 'bg-slate-200 dark:bg-slate-700'
+          }`}
+        >
+          <span className={`absolute top-1 w-5 h-5 rounded-full bg-white shadow transition-all ${autoSpeak ? 'left-6' : 'left-1'}`} />
+        </button>
+      </div>
+
+      {notice && (
+        <p className="w-full rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
+          {notice}
+        </p>
+      )}
+
+      <TranscriptStream
+        utterances={utterances}
+        interimText={interimText}
+        onRetry={handleRetry}
+        emptyLabel={t('live.empty')}
+      />
+
+      {perSpeakerMics ? (
+        <div className="flex items-end gap-8">
+          {[1, 2].map((speaker) => {
+            const speakerListening = listening && activeSpeaker === speaker;
+            return (
+              <MicButton
+                key={speaker}
+                size="sm"
+                state={speakerListening ? 'listening' : 'idle'}
+                label={t('live.speaker').replace('{n}', speaker)}
+                onClick={() => (speakerListening ? stopListening() : startListening(speaker))}
+                disabled={engineUnavailable || (listening && !speakerListening)}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <MicButton
+          state={listening ? 'listening' : 'idle'}
+          label={listening ? t('live.listening') : t('live.press')}
+          onClick={listening ? stopListening : () => startListening(1)}
+          disabled={engineUnavailable}
+        />
+      )}
+
+      <p className="text-xs text-slate-400">
+        {t('live.minutesLeft').replace('{seconds}', secondsLeft)}
+      </p>
+
+      <LanguageSelectorModal
+        isOpen={langPicker !== null}
+        onClose={() => setLangPicker(null)}
+        activeCardId={langPicker}
+        currentLang={langPicker === 'A' ? langA : langB}
+        onSelectLanguage={handlePickLanguage}
+      />
+
+      <QuotaExceededModal isOpen={showQuotaModal} onClose={() => setShowQuotaModal(false)} />
+    </div>
+  );
+};
+
+export default LiveWorkspace;

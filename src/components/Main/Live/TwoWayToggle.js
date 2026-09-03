@@ -17,6 +17,7 @@ const TwoWayToggle = ({ enabled, onChange, infoText, disabled }) => {
         type="button"
         role="switch"
         aria-checked={enabled}
+        aria-label={t('live.twoWay')}
         disabled={disabled}
         onClick={() => onChange(!enabled)}
         className={`relative w-12 h-7 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
