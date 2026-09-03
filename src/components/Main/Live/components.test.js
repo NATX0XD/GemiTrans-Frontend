@@ -20,6 +20,14 @@ test('ModeTabs disables everything except translate', () => {
   expect(onChange).not.toHaveBeenCalled();
 });
 
+test('ModeTabs reports the mode the user picked', () => {
+  const onChange = jest.fn();
+  wrap(<ModeTabs mode="transcribe" onChange={onChange} />);
+
+  fireEvent.click(screen.getByRole('button', { name: /translate|แปลภาษา/i }));
+  expect(onChange).toHaveBeenCalledWith('translate');
+});
+
 test('LanguagePairBar shows both languages and swaps them', () => {
   const onSwap = jest.fn();
   wrap(<LanguagePairBar langA="English" langB="Thai" onPickA={jest.fn()} onPickB={jest.fn()} onSwap={onSwap} disabled={false} />);
@@ -27,8 +35,21 @@ test('LanguagePairBar shows both languages and swaps them', () => {
   expect(screen.getByRole('button', { name: 'English' })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'Thai' })).toBeInTheDocument();
 
-  fireEvent.click(screen.getByLabelText(/swap/i));
+  fireEvent.click(screen.getByLabelText(/swap|สลับภาษา/i));
   expect(onSwap).toHaveBeenCalled();
+});
+
+test('LanguagePairBar opens the picker for whichever side was tapped', () => {
+  const onPickA = jest.fn();
+  const onPickB = jest.fn();
+  wrap(<LanguagePairBar langA="English" langB="Thai" onPickA={onPickA} onPickB={onPickB} onSwap={jest.fn()} disabled={false} />);
+
+  fireEvent.click(screen.getByRole('button', { name: 'English' }));
+  expect(onPickA).toHaveBeenCalled();
+  expect(onPickB).not.toHaveBeenCalled();
+
+  fireEvent.click(screen.getByRole('button', { name: 'Thai' }));
+  expect(onPickB).toHaveBeenCalled();
 });
 
 test('LanguagePairBar locks while a session is running', () => {
@@ -36,12 +57,34 @@ test('LanguagePairBar locks while a session is running', () => {
   expect(screen.getByRole('button', { name: 'English' })).toBeDisabled();
 });
 
+// Every role query below is name-scoped on purpose: a bare getByRole('switch')
+// still passes against a control with no accessible name, which is exactly the
+// attribute LiveWorkspace's tests rely on to tell the three switches apart.
 test('TwoWayToggle reports the flipped value', () => {
   const onChange = jest.fn();
   wrap(<TwoWayToggle enabled={false} onChange={onChange} infoText="info" disabled={false} />);
 
-  fireEvent.click(screen.getByRole('switch'));
+  fireEvent.click(screen.getByRole('switch', { name: /two-way translation|แปลสองทาง/i }));
   expect(onChange).toHaveBeenCalledWith(true);
+});
+
+test('TwoWayToggle reflects its state to assistive tech', () => {
+  wrap(<TwoWayToggle enabled onChange={jest.fn()} infoText="info" disabled={false} />);
+  expect(screen.getByRole('switch', { name: /two-way translation|แปลสองทาง/i }))
+    .toHaveAttribute('aria-checked', 'true');
+});
+
+test('TwoWayToggle shows the info text on screen once enabled, not just on hover', () => {
+  const info = 'Browser mode cannot detect the language on its own.';
+  const { rerender } = wrap(<TwoWayToggle enabled={false} onChange={jest.fn()} infoText={info} disabled={false} />);
+  expect(screen.queryByText(info)).not.toBeInTheDocument();
+
+  rerender(
+    <LanguageProvider>
+      <TwoWayToggle enabled onChange={jest.fn()} infoText={info} disabled={false} />
+    </LanguageProvider>
+  );
+  expect(screen.getByText(info)).toBeInTheDocument();
 });
 
 test('MicButton renders its label and fires on click', () => {
@@ -49,13 +92,13 @@ test('MicButton renders its label and fires on click', () => {
   wrap(<MicButton state="idle" label="Press and start talking" onClick={onClick} disabled={false} />);
 
   expect(screen.getByText('Press and start talking')).toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button'));
+  fireEvent.click(screen.getByRole('button', { name: 'Press and start talking' }));
   expect(onClick).toHaveBeenCalled();
 });
 
 test('MicButton exposes its listening state to assistive tech', () => {
   wrap(<MicButton state="listening" label="Listening…" onClick={jest.fn()} disabled={false} />);
-  expect(screen.getByRole('button')).toHaveAttribute('aria-pressed', 'true');
+  expect(screen.getByRole('button', { name: 'Listening…' })).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('TranscriptStream shows the empty state', () => {
