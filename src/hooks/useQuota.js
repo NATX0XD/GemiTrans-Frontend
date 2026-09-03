@@ -29,7 +29,7 @@ const useQuota = () => {
             if (doc.exists()) {
                 setQuota(doc.data());
             } else {
-                setQuota({ tokens_today: 0, daily_limit: 10000 });
+                setQuota({ tokens_today: 0, daily_limit: 10000, live_seconds_today: 0, live_seconds_limit: 600 });
             }
             setLoading(false);
         }, (err) => {
@@ -46,15 +46,24 @@ const useQuota = () => {
     const isNearLimit = percentage >= 90;
     const isOverLimit = used >= limit;
 
-    return { 
-        quota, 
-        loading, 
-        used, 
-        limit, 
-        percentage, 
-        isNearLimit, 
+    const liveSecondsUsed = quota?.live_seconds_today || 0;
+    const liveSecondsLimit = quota?.live_seconds_limit || 600;
+    const livePercentage = Math.min((liveSecondsUsed / liveSecondsLimit) * 100, 100);
+    const isLiveOverLimit = liveSecondsUsed >= liveSecondsLimit;
+
+    return {
+        quota,
+        loading,
+        used,
+        limit,
+        percentage,
+        isNearLimit,
         isOverLimit,
-        uid 
+        liveSecondsUsed,
+        liveSecondsLimit,
+        livePercentage,
+        isLiveOverLimit,
+        uid
     };
 };
 
