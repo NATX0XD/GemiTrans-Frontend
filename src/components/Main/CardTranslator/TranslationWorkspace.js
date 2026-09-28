@@ -7,6 +7,7 @@ import { auth } from '../../../configuration/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { appendTranslationHistory } from '../../../services/historyService';
 import { getUserSettings } from '../../../services/settingsService';
+import { translationErrorKey } from '../../../services/translateError';
 import QuotaExceededModal from '../Modal/QuotaExceededModal';
 import { useTranslation } from '../../../context/LanguageContext';
 
@@ -195,9 +196,7 @@ const TranslationWorkspace = forwardRef(({ onOpenLanguageModal }, ref) => {
         setShowQuotaModal(true);
       }
 
-      const errorMessage = err.status === 429
-        ? t('translator.workspace.quotaExceeded')
-        : t('translator.workspace.translationFailed');
+      const errorMessage = t(`translator.workspace.${translationErrorKey(err)}`);
 
       setTargetCards(cards => cards.map(c => ({
         ...c,

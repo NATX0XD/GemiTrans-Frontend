@@ -57,3 +57,72 @@ test('flags an exhausted live bucket', () => {
   expect(result.current.isLiveOverLimit).toBe(true);
   expect(result.current.livePercentage).toBe(100);
 });
+
+// --- the badge must roll over on the clock, not on a round trip --------------
+
+describe('daily rollover', () => {
+  const YESTERDAY = '2026-09-03';
+  const TODAY = '2026-09-04';
+
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(new Date('2026-09-04T03:00:00Z')); // 10:00 in Bangkok
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  test('a counter left over from yesterday reads as zero', () => {
+    const { result, rerender } = renderHook(() => useQuota());
+    emit({
+      tokens_today: 10000,
+      daily_limit: 10000,
+      live_seconds_today: 600,
+      live_seconds_limit: 600,
+      last_reset_date: YESTERDAY,
+    });
+    rerender();
+
+    // Firestore only changes when the API succeeds. While it is failing, the
+    // stored number never clears and the user is told they are out of quota on
+    // a day they have not spent any.
+    expect(result.current.used).toBe(0);
+    expect(result.current.isOverLimit).toBe(false);
+    expect(result.current.percentage).toBe(0);
+    expect(result.current.liveSecondsUsed).toBe(0);
+    expect(result.current.isLiveOverLimit).toBe(false);
+  });
+
+  test("today's counter is reported as stored", () => {
+    const { result, rerender } = renderHook(() => useQuota());
+    emit({
+      tokens_today: 2500,
+      daily_limit: 10000,
+      live_seconds_today: 60,
+      live_seconds_limit: 600,
+      last_reset_date: TODAY,
+    });
+    rerender();
+
+    expect(result.current.used).toBe(2500);
+    expect(result.current.liveSecondsUsed).toBe(60);
+  });
+
+  test('the limits survive the rollover — only the counters reset', () => {
+    const { result, rerender } = renderHook(() => useQuota());
+    emit({
+      tokens_today: 9999,
+      daily_limit: 25000,
+      live_seconds_today: 600,
+      live_seconds_limit: 0,
+      last_reset_date: YESTERDAY,
+    });
+    rerender();
+
+    expect(result.current.limit).toBe(25000);
+    // A limit of 0 is how an operator suspends a user; the rollover must not
+    // hand it back the default.
+    expect(result.current.liveSecondsLimit).toBe(0);
+    expect(result.current.isLiveOverLimit).toBe(true);
+  });
+});
